@@ -1,0 +1,56 @@
+# Routes Config
+#
+# This file defines all application routes (Higher priority routes first)
+#
+
+module:testrunner
+# module:jobs
+
+
+GET     /                                           App.Index
+GET     /logout                                     App.Logout
+GET     /admin-dashboard                            AdminDashboard.Index
+GET     /owner-dashboard                            OwnerDashboard.Index
+POST    /client                                     App.AddClient
+GET     /client/:id                                 App.GetClient
+PUT     /client/:id                                 App.UpdateClient
+DELETE  /client/:id                                 App.DeleteClient
+GET     /clients                                    App.ListClients
+POST    /staff                                      App.AddStaff
+GET     /staff/:id                                  App.GetStaff
+PUT     /staff/:id                                  App.UpdateStaff
+DELETE  /staff/:id                                  App.DeleteStaff
+GET     /staffs                                     App.ListStaffs
+POST    /login                                      App.GetLoginStatus
+POST    /unit                                       App.AddUnit
+GET     /unit/:id                                   App.GetUnit
+PUT     /unit/:id                                   App.UpdateUnit
+DELETE  /unit/:id                                   App.DeleteUnit
+GET     /units                                      App.ListUnits
+GET     /unit/client/:id                            App.GetClientUnits
+GET     /sales/total                                App.GetTotalSales
+GET     /orders/completed                           App.GetOrderCompleted
+GET     /orders/pending                             App.GetOrderPending
+GET     /orders/latest                              App.GetLatestOrders
+POST    /warehouse                                  App.AddWarehouse
+GET     /warehouse/:id                              App.GetWarehouse
+PUT     /warehouse/:id                              App.UpdateWarehouse
+DELETE  /warehouse/:id                              App.DeleteWarehouse
+GET     /warehouses                                 App.ListWarehouses
+
+
+# Ignore favicon requests
+GET     /favicon.ico                            404
+
+# Map static resources from the /app/public folder to the /public path
+GET     /public/*filepath                       Static.Serve("public")
+
+# Catch all, this will route any request into the controller path
+#
+#                    **** WARNING ****
+# Enabling this exposes any controller and function to the web.
+# ** This is a serious security issue if used online **
+#
+# For rapid development uncomment the following to add new controller.action endpoints
+# without having to add them to the routes table.
+# *       /:controller/:action                    :controller.:action

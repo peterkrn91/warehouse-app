@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../../../public/css/style.css" />
+
+    <title>Dashboard</title>
+  </head>
+
+  <body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <a href="dashboard.html" class="logo">
+        <i class="bx bx-code-alt"></i>
+        <div class="logo-name"><span>Where</span>House</div>
+      </a>
+      <ul class="side-menu">
+        <li class="active">
+          <a href="#"><i class="bx bx-analyse"></i>Admin Dashboard</a>
+        </li>
+        <!-- <li>
+          <a href="#"><i class="bx bx-group"></i>Clients</a>
+        </li> -->
+      </ul>
+
+      <ul class="side-menu">
+        <li>
+          <a href="#" class="logout">
+            <i class="bx bx-log-out-circle" id="logoutButton"></i>
+            Logout
+          </a>
+        </li>
+      </ul>
+    </div>
+    <!-- End of Sidebar -->
+
+    <!-- Main Content -->
+    <div class="content">
+      <!-- Navbar -->
+      <nav>
+        <i class="bx bx-menu"></i>
+        <form action="#"></form>
+        <input type="checkbox" id="theme-toggle" hidden />
+        <label for="theme-toggle" class="theme-toggle"></label>
+        <a href="#" class="profile">
+          <img src="../images/logo.png" />
+        </a>
+      </nav>
+      <!-- End of Navbar -->
+
+      <main>
+        <div class="header">
+          <div class="left">
+            <h1>Dashboard</h1>
+          </div>
+        </div>
+        <!-- Insights -->
+        <ul class="insights">
+          <li id="orderCompleted">
+            <i class="bx bx-calendar-check"></i>
+            <span class="info">
+              <p>Order Completed</p>
+              <!-- Dynamically add <h3> here to show numbers of order completed -->
+              <h3 id="totalOrderCompleted"></h3>
+            </span>
+          </li>
+          <li id="orderPending">
+            <i class="bx bx-hourglass"></i>
+            <span class="info">
+              <p>Order Pending</p>
+              <!-- Dynamically add <h3> here to show numbers of order pending -->
+              <h3 id="totalOrderPending"></h3>
+            </span>
+          </li>
+          <li id="totalClients">
+            <i class="bx bx-male"></i>
+            <span class="info">
+              <p>Total Clients</p>
+              <!-- Dynamically add value here to show total clients -->
+              <h3 id="totalClientsValue"></h3>
+            </span>
+          </li>
+          <li id="totalSales">
+            <i class="bx bx-dollar"></i>
+            <span class="info">
+              <p>Total Sales</p>
+              <!-- Dynamically add value here to show total sales -->
+              <h3 id="totalSalesValue"></h3>
+            </span>
+          </li>
+        </ul>
+        <!-- End of Insights -->
+
+        <div class="bottom-data">
+          <div class="orders">
+            <div class="header">
+              <i class="bx bx-receipt" id="showOrdersBtn"></i>
+              <h3>Orders List</h3>
+              <i class="bx bx-plus" id="addOrderBtn"></i>
+              <i class="bx bx-check" id="addCompleteOrderBtn"></i>
+            </div>
+            <table id="orderTable">
+              <thead>
+                <tr>
+                  <th>Order Name</th>
+                  <th>Order Date</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="orderTableBody">
+                <!-- Dynamic rows will be added here -->
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Client's List -->
+          <div class="reminders">
+            <div class="header">
+              <i class="bx bx-male" id="showClientsBtn"></i>
+              <h3>Clients List</h3>
+              <i class="bx bx-plus" id="addClientBtn"></i>
+              <i class="bx bx-pencil" id="editClientBtn"></i>
+              <i class="bx bx-trash" id="deleteClientBtn"></i>
+            </div>
+
+            <ul class="task-list">
+              <!-- Modal for Creating an Order -->
+              <div class="modal" id="orderModal">
+                <div class="modal-content">
+                  <span class="close">&times;</span>
+                  <h2>Create New Order</h2>
+                  <input
+                    type="text"
+                    id="clientIdInput"
+                    placeholder="Client ID"
+                  />
+                  <input
+                    type="text"
+                    id="itemNameInput"
+                    placeholder="Item Name"
+                  />
+                  <input
+                    type="text"
+                    id="itemDescriptionInput"
+                    placeholder="Item Description"
+                  />
+                  <input
+                    type="text"
+                    id="itemWeightInput"
+                    placeholder="Item Weight (KG)"
+                  />
+                  <input
+                    type="date"
+                    id="orderDateInput"
+                    placeholder="Order Date"
+                  />
+                  <button id="createOrderBtn">Create Order</button>
+                </div>
+              </div>
+
+              <!-- Modal for Completing Order -->
+              <div class="modal" id="completeOrderModal">
+                <div class="modal-content">
+                  <span class="close">&times;</span>
+                  <h2>Complete Order</h2>
+                  <input type="text" id="orderIdInput" placeholder="Order ID" />
+                  <button id="completeOrderBtn">Complete Order</button>
+                </div>
+              </div>
+
+              <!-- Modal for Adding a Client -->
+              <div class="modal" id="addClientModal">
+                <div class="modal-content">
+                  <span class="close">&times;</span>
+                  <h2>Add Client</h2>
+                  <input
+                    type="text"
+                    id="clientNameInput"
+                    placeholder="Client Name"
+                  />
+                  <button id="addClientBtn">Add Client</button>
+                </div>
+              </div>
+
+              <!-- Modal for Editing a Client -->
+              <div class="modal" id="editClientModal">
+                <div class="modal-content">
+                  <span class="close">&times;</span>
+                  <h2>Edit Client</h2>
+                  <input
+                    type="text"
+                    id="clientIdEditInput"
+                    placeholder="Client ID"
+                  />
+                  <input
+                    type="text"
+                    id="clientNameEditInput"
+                    placeholder="New Client Name"
+                  />
+                  <button id="editClientBtn">Update Client</button>
+                </div>
+              </div>
+
+              <!-- Modal for the Clients List -->
+              <div class="modalBig" id="showClientsList">
+                <div class="modal-content-big">
+                  <span class="close">&times;</span>
+                  <h2>Clients List</h2>
+                </div>
+              </div>
+
+              <!-- Modal for the Orders List -->
+              <div class="modalBig" id="showOrdersList">
+                <div class="modal-content-big">
+                  <span class="close">&times;</span>
+                  <h2>Orders List</h2>
+                </div>
+              </div>
+
+              <!-- Modal for Deleting a Client -->
+              <div class="modal" id="deleteClientModal">
+                <div class="modal-content">
+                  <span class="close">&times;</span>
+                  <h2>Delete Client</h2>
+                  <input
+                    type="text"
+                    id="clientIdDeleteInput"
+                    placeholder="Client ID"
+                  />
+                  <button id="deleteClientBtn">Delete Client</button>
+                </div>
+              </div>
+            </ul>
+          </div>
+          <!-- End of Modals -->
+        </div>
+      </main>
+    </div>
+    <script>
+      const sideLinks = document.querySelectorAll(
+        ".sidebar .side-menu li a:not(.logout)"
+      );
+
+      sideLinks.forEach((item) => {
+        const li = item.parentElement;
+        item.addEventListener("click", () => {
+          sideLinks.forEach((i) => {
+            i.parentElement.classList.remove("active");
+          });
+          li.classList.add("active");
+        });
+      });
+
+      const menuBar = document.querySelector(".content nav .bx.bx-menu");
+      const sideBar = document.querySelector(".sidebar");
+
+      menuBar.addEventListener("click", () => {
+        sideBar.classList.toggle("close");
+      });
+
+      const toggler = document.getElementById("theme-toggle");
+
+      toggler.addEventListener("change", function () {
+        if (this.checked) {
+          document.body.classList.add("dark");
+        } else {
+          document.body.classList.remove("dark");
+        }
+      });
+
+      const checkmarkIcons = document.querySelectorAll(".reminder .bx-check");
+
+      checkmarkIcons.forEach((icon) => {
+        icon.addEventListener("click", () => {
+          if (icon.classList.contains("bx-check")) {
+            icon.classList.replace("bx-check", "bx-x");
+          } else {
+            icon.classList.replace("bx-x", "bx-check");
+          }
+        });
+      });
+    </script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+      $(document).ready(function () {
+        // Fetch clients when the page loads
+        getTotalClients();
+
+        // Fetch sales when the page loads
+        getTotalSales();
+
+        // Fetch total order completed when the page loads
+        getOrderCompleted();
+
+        // Fetch total order pending  when the page loads
+        getOrderPending();
+
+        // Fetch recent orders and update the table when the document is ready
+        getLatestOrders();
+      });
+
+      //logout function
+      $("#logoutButton").on("click", function () {
+        // Call the logout function when the logout button is clicked
+        logout();
+      });
+      
+      function getOrderCompleted() {
+        $.ajax({
+          url: "/orders/completed",
+          type: "GET",
+          success: function (response) {
+            // Clear the span body with id "orderCompleted"
+            $("#totalOrderCompleted").empty();
+
+            // get response length
+            var count = response.length;
+            // Append count value into tag that uses id "orderCompleted"
+            $("#totalOrderCompleted").text(count);
+          },
+          error: function (xhr, status, error) {
+            console.error(error);
+            alert("An error occurred while fetching the orders.");
+          },
+        });
+      }
+
+      function getOrderPending() {
+        $.ajax({
+          url: "/orders/pending",
+          type: "GET",
+          success: function (response) {
+            // Clear the span body with id "orderPending"
+            $("#totalOrderPending").empty();
+
+            // get response length
+            var count = response.length;
+            // Append count value into tag that uses id "orderPending"
+            $("#totalOrderPending").text(count);
+          },
+          error: function (xhr, status, error) {
+            console.error(error);
+            alert("An error occurred while fetching the orders.");
+          },
+        });
+      }
+
+      function getTotalClients() {
+        $.ajax({
+          url: "/clients",
+          type: "GET",
+          success: function (response) {
+            // Clear the content inside the <h3> tag
+            $("#totalClientsValue").empty();
+
+            // get response length
+            var totalClients = response.length;
+            // Set the text content of the <h3> tag to the total clients value
+            $("#totalClientsValue").text(totalClients);
+          },
+          error: function (xhr, status, error) {
+            console.error(error);
+            alert("An error occurred while fetching the clients.");
+          },
+        });
+      }
+
+      function getTotalSales() {
+        $.ajax({
+          url: "/sales/total",
+          type: "GET",
+          success: function (response) {
+            // Clear the span body with id "totalSales"
+            $("#totalSalesValue").empty();
+
+            var totalSales = response;
+            // Set the text content of the <h3> tag to the total sales value
+            $("#totalSalesValue").text(totalSales);
+          },
+          error: function (xhr, status, error) {
+            console.error(error);
+            alert("An error occurred while fetching the sales.");
+          },
+        });
+      }
+
+      // Function to add a new row to the table
+      function addOrderRow(user, orderDate, status) {
+        var newRow =
+          "<tr>" +
+          "<td><p>" +
+          user +
+          "</p></td>" +
+          "<td>" +
+          orderDate +
+          "</td>" +
+          '<td><span class="status ' +
+          status +
+          '">' +
+          status.charAt(0).toUpperCase() +
+          status.slice(1) +
+          "</span></td>" +
+          "</tr>";
+
+        $("#orderTableBody").append(newRow);
+      }
+
+      // AJAX function to fetch recent orders and update the table
+      function getLatestOrders() {
+        $.ajax({
+          url: "/orders/latest",
+          type: "GET",
+          success: function (response) {
+            // Clear the table body before adding new rows
+            $("#orderTableBody").empty();
+
+            // Loop through the response to add rows to the table
+            for (var i = 0; i < response.length; i++) {
+              var order = response[i];
+              addOrderRow(order.name, order.order_date, order.status);
+            }
+          },
+          error: function (xhr, status, error) {
+            console.error(error);
+            alert("An error occurred while fetching the latest orders.");
+          },
+        });
+      }
+      function logout() {
+        $.ajax({
+          url: "/logout",
+          type: "GET",
+          success: function (data) {
+            console.log("Logout successful");
+            // Redirect to the homepage or any other desired page after logout
+            window.location.href = "/";
+          },
+          error: function (xhr, status, error) {
+            console.error("Error:", error);
+          },
+        });
+      }
+    </script>
+    <script src="../../../public/js/index.js"></script>
+  </body>
+</html>
