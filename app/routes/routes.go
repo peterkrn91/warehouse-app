@@ -295,6 +295,15 @@ func (_ tApp) GetLatestOrders(
 	return revel.MainRouter.Reverse("App.GetLatestOrders", args).URL
 }
 
+func (_ tApp) UpdateOrderStatus(
+		id int64,
+		) string {
+	args := make(map[string]string)
+	
+	revel.Unbind(args, "id", id)
+	return revel.MainRouter.Reverse("App.UpdateOrderStatus", args).URL
+}
+
 func (_ tApp) AddWarehouse(
 		) string {
 	args := make(map[string]string)

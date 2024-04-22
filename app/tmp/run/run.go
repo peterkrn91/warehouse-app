@@ -308,6 +308,14 @@ func Register() {
 				},
 			},
 			&revel.MethodType{
+				Name: "UpdateOrderStatus",
+				Args: []*revel.MethodArg{ 
+					&revel.MethodArg{Name: "id", Type: reflect.TypeOf((*int64)(nil)) },
+				},
+				RenderArgNames: map[int][]string{ 
+				},
+			},
+			&revel.MethodType{
 				Name: "AddWarehouse",
 				Args: []*revel.MethodArg{ 
 				},

@@ -362,6 +362,21 @@ func (c App) GetLatestOrders() revel.Result {
 	return c.RenderJSON(data)
 }
 
+func (c App) UpdateOrderStatus(id int64) revel.Result {
+	var unit models.Unit
+	if err := c.Params.BindJSON(&unit); err != nil {
+		c.Response.Status = 400 // Bad request status code
+		return nil
+	}
+	unit.ID = id
+	if err := models.UpdateOrderStatus(&unit); err != nil {
+		c.Response.Status = 500 // Internal server error status code
+		return nil
+	}
+	c.Response.Status = 200 // Success status code
+	return c.RenderJSON(unit)
+}
+
 func (c App) AddWarehouse() revel.Result {
 	var errors map[string]interface{}
 	var warehouses []models.Warehouse

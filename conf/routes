@@ -31,6 +31,7 @@ GET     /sales/total                                App.GetTotalSales
 GET     /orders/completed                           App.GetOrderCompleted
 GET     /orders/pending                             App.GetOrderPending
 GET     /orders/latest                              App.GetLatestOrders
+PUT     /orders/update                              App.UpdateOrderStatus
 POST    /warehouse                                  App.AddWarehouse
 GET     /warehouse/:id                              App.GetWarehouse
 PUT     /warehouse/:id                              App.UpdateWarehouse

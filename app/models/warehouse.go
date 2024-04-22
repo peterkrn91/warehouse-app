@@ -206,6 +206,12 @@ func (unit Unit) GetLatestOrders() ([]Unit, error) {
 	return latestOrders, nil
 }
 
+// UpdateUnit updates an existing unit in the database.
+func UpdateOrderStatus(unit *Unit) error {
+	response := DB.Where("id = ?", unit.ID).Save(unit)
+	return response.Error
+}
+
 // GetClientUnits retrieves all units belonging to a specific client
 func GetClientOrders(clientID int) ([]Unit, error) {
 	var clientUnits []Unit
