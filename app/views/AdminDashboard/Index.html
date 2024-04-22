@@ -127,6 +127,17 @@
               <i class="bx bx-pencil" id="editClientBtn"></i>
               <i class="bx bx-trash" id="deleteClientBtn"></i>
             </div>
+            <table id="clientTable">
+              <thead>
+                <tr>
+                  <th>Client ID</th>
+                  <th>Client Name</th>
+                </tr>
+              </thead>
+              <tbody id="clientTableBody">
+                <!-- Dynamic rows will be added here -->
+              </tbody>
+            </table>
 
             <ul class="task-list">
               <!-- Modal for Creating an Order -->
@@ -134,32 +145,37 @@
                 <div class="modal-content">
                   <span class="close">&times;</span>
                   <h2>Create New Order</h2>
-                  <input
-                    type="text"
-                    id="clientIdInput"
-                    placeholder="Client ID"
-                  />
-                  <input
-                    type="text"
-                    id="itemNameInput"
-                    placeholder="Item Name"
-                  />
-                  <input
-                    type="text"
-                    id="itemDescriptionInput"
-                    placeholder="Item Description"
-                  />
-                  <input
-                    type="text"
-                    id="itemWeightInput"
-                    placeholder="Item Weight (KG)"
-                  />
-                  <input
-                    type="date"
-                    id="orderDateInput"
-                    placeholder="Order Date"
-                  />
-                  <button id="createOrderBtn">Create Order</button>
+                  <!-- Add ID to the form -->
+                  <form id="orderForm">
+                    <input
+                      type="text"
+                      id="clientIdInput"
+                      placeholder="Client ID"
+                    />
+                    <input
+                      type="text"
+                      id="itemNameInput"
+                      placeholder="Item Name"
+                    />
+                    <input
+                      type="text"
+                      id="itemDescriptionInput"
+                      placeholder="Item Description"
+                    />
+                    <input
+                      type="text"
+                      id="itemWeightInput"
+                      placeholder="Item Weight (KG)"
+                    />
+                    <input
+                      type="date"
+                      id="orderDateInput"
+                      placeholder="Order Date"
+                    />
+                    <button type="submit" id="createOrderBtn">
+                      Create Order
+                    </button>
+                  </form>
                 </div>
               </div>
 
@@ -178,12 +194,17 @@
                 <div class="modal-content">
                   <span class="close">&times;</span>
                   <h2>Add Client</h2>
-                  <input
-                    type="text"
-                    id="clientNameInput"
-                    placeholder="Client Name"
-                  />
-                  <button id="addClientBtn">Add Client</button>
+                  <form
+                    id="add-client-form"
+                    onsubmit="addClient(); return false;"
+                  >
+                    <input
+                      type="text"
+                      id="clientNameInput"
+                      placeholder="Client Name"
+                    />
+                    <button type="submit" id="addClientBtn">Add Client</button>
+                  </form>
                 </div>
               </div>
 
@@ -192,17 +213,19 @@
                 <div class="modal-content">
                   <span class="close">&times;</span>
                   <h2>Edit Client</h2>
-                  <input
-                    type="text"
-                    id="clientIdEditInput"
-                    placeholder="Client ID"
-                  />
-                  <input
-                    type="text"
-                    id="clientNameEditInput"
-                    placeholder="New Client Name"
-                  />
-                  <button id="editClientBtn">Update Client</button>
+                  <form id="edit-client-form">
+                    <input
+                      type="text"
+                      id="clientIdEditInput"
+                      placeholder="Client ID"
+                    />
+                    <input
+                      type="text"
+                      id="clientNameEditInput"
+                      placeholder="New Client Name"
+                    />
+                    <button id="updateClientBtn">Update Client</button>
+                  </form>
                 </div>
               </div>
 
@@ -227,12 +250,14 @@
                 <div class="modal-content">
                   <span class="close">&times;</span>
                   <h2>Delete Client</h2>
-                  <input
-                    type="text"
-                    id="clientIdDeleteInput"
-                    placeholder="Client ID"
-                  />
-                  <button id="deleteClientBtn">Delete Client</button>
+                  <form id="delete-client-form">
+                    <input
+                      type="text"
+                      id="clientIdDeleteInput"
+                      placeholder="Client ID"
+                    />
+                    <button id="deleteClientBtn">Delete Client</button>
+                  </form>
                 </div>
               </div>
             </ul>
@@ -285,6 +310,7 @@
         });
       });
     </script>
+    <script></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
       $(document).ready(function () {
@@ -297,17 +323,65 @@
         // Fetch total order completed when the page loads
         getOrderCompleted();
 
-        // Fetch total order pending  when the page loads
+        // Fetch total order pending when the page loads
         getOrderPending();
 
-        // Fetch recent orders and update the table when the document is ready
+        // Fetch recent orders
         getLatestOrders();
+
+        // Fetch all clients in currently logged-in staff
+        getListClients();
+
+        addNewOrder();
+
+        // Handle form submission
+        $("#addClientModal").on("submit", function (event) {
+          event.preventDefault(); // Prevent default form submission
+
+          // Call addClient function
+          addClient();
+        });
+
+        $("#editClientModal").on("submit", function (event) {
+          event.preventDefault(); // Prevent default form submission
+
+          // Get the client ID and updated name from the input fields
+          const clientID = $("#clientIdEditInput").val();
+          const updatedName = $("#clientNameEditInput").val();
+
+          // Call editClient function with the retrieved client ID and updated name
+          editClient(clientID, updatedName);
+        });
+
+        $("#deleteClientModal").on("submit", function (event) {
+          event.preventDefault(); // Prevent default form submission
+
+          // Get the client ID and updated name from the input fields
+          const clientID = $("#clientIdDeleteInput").val();
+
+          // Call editClient function with the retrieved client ID and updated name
+          deleteClient(clientID);
+        });
+
+        // Define a map to store staff and warehouse ID mappings
+        const staffWarehouseMap = {
+          1: 10001,
+          2: 10002,
+        };
       });
 
       //logout function
       $("#logoutButton").on("click", function () {
         // Call the logout function when the logout button is clicked
         logout();
+      });
+
+      // Event listener for the form submission inside the order modal
+      $("#orderForm form").on("submit", function (event) {
+        event.preventDefault(); // Prevent default form submission
+
+        // Call the addNewOrder function here
+        addNewOrder();
       });
 
       function logout() {
@@ -443,6 +517,211 @@
           error: function (xhr, status, error) {
             console.error(error);
             alert("An error occurred while fetching the latest orders.");
+          },
+        });
+      }
+
+      function getListClients() {
+        $.ajax({
+          url: "/clients",
+          type: "GET",
+          success: function (response) {
+            $("#clientTableBody").empty(); // Clear the table body before adding new rows
+
+            // Loop through the response to add rows to the table
+            for (var i = 0; i < response.length; i++) {
+              var client = response[i];
+              addClientRow(client.ID, client.Name); // Call function to add row
+            }
+          },
+          error: function (xhr, status, error) {
+            console.error(error);
+            alert("An error occurred while fetching the clients.");
+          },
+        });
+      }
+
+      function addClientRow(id, name) {
+        var newRow =
+          "<tr>" + "<td>" + id + "</td>" + "<td>" + name + "</td>" + "</tr>";
+
+        $("#clientTableBody").append(newRow); // Append row to table body
+      }
+
+      // Define a map to store staff and warehouse ID mappings
+      const staffWarehouseMap = {
+        1: 10001,
+        2: 10002,
+        3: 10003,
+        // Add more mappings as needed
+      };
+
+      // Function to get the warehouse ID based on staff ID
+      function getWarehouseId(ID) {
+        if (ID in staffWarehouseMap) {
+          return staffWarehouseMap[ID];
+        } else {
+          console.error("Warehouse ID not found for staff ID:", ID);
+          // You can return a default warehouse ID or handle the error as needed
+          return null;
+        }
+      }
+
+      // Function to retrieve a cookie value by its name
+      function getCookie(cookieName) {
+        const cookies = document.cookie.split(";");
+        for (let i = 0; i < cookies.length; i++) {
+          const cookie = cookies[i].trim();
+          if (cookie.startsWith(cookieName + "=")) {
+            // Get the cookie value
+            const cookieValue = cookie.substring(cookieName.length + 1);
+
+            // Decode the cookie value
+            const decodedValue = decodeURIComponent(cookieValue);
+
+            // Check if the cookie value is JSON-marshaled
+            if (decodedValue.startsWith('"') && decodedValue.endsWith('"')) {
+              // Remove the leading and trailing quotes
+              const unquotedValue = decodedValue.slice(1, -1);
+
+              // Parse the JSON-marshaled value
+              const parsedValue = JSON.parse(unquotedValue);
+
+              // Extract and return the ID
+              return parsedValue.ID || null;
+            }
+          }
+        }
+        return null;
+      }
+
+      // Function to add a new order with the staff's warehouse ID
+      function addNewOrder() {
+        const itemName = $("#itemNameInput").val();
+        const itemDescription = $("#itemDescriptionInput").val();
+        const itemWeight = $("#itemWeightInput").val();
+        const orderDate = $("#orderDateInput").val();
+        const clientId = $("#clientIdInput").val();
+        const status = "pending";
+
+        // Get staff ID from cookies
+        const staffID = parseInt(getCookie("ID"));
+        if (!staffID) {
+          console.error("Staff ID not found in cookies");
+          return;
+        }
+
+        // Get the warehouse ID based on the staff ID
+        const warehouseID = getWarehouseId(staffID);
+        if (!warehouseID) {
+          console.error("Warehouse ID not found for staff ID:", staffID);
+          return;
+        }
+
+        const orderPayload = [
+          {
+            name: itemName,
+            description: itemDescription,
+            kg: parseFloat(itemWeight),
+            warehouse_id: warehouseID,
+            client_id: parseInt(clientId),
+            order_date: orderDate,
+            status: status,
+          },
+        ];
+
+        $.ajax({
+          url: "/unit",
+          type: "POST",
+          contentType: "application/json",
+          data: JSON.stringify(orderPayload),
+          success: function (response) {
+            console.log("Order created successfully:", response);
+            // Handle success response as needed
+          },
+          error: function (xhr, status, error) {
+            console.error("Error creating order:", error);
+            alert("An error occurred while creating the order.");
+          },
+        });
+      }
+
+      function addClient() {
+        const clientName = $("#clientNameInput").val(); // Get the client name from the input field
+
+        // Construct the JSON payload
+        const clientPayload = [
+          {
+            Name: clientName,
+          },
+        ];
+
+        // Make an AJAX POST request to add the client
+        $.ajax({
+          url: "/client",
+          type: "POST",
+          contentType: "application/json",
+          data: JSON.stringify(clientPayload),
+          success: function (response) {
+            alert("Client added successfully!");
+            console.log("Client added successfully:", response);
+            // Handle success response as needed
+          },
+          error: function (xhr, status, error) {
+            console.error("Error adding client:", error);
+            alert("An error occurred while adding the client.");
+          },
+        });
+      }
+
+      // Function to edit the client
+      function editClient(clientID, updatedName) {
+        // Check if the user entered a name and if the ID is valid
+        if (updatedName && clientID) {
+          // Construct the JSON payload
+          const clientPayload = {
+            ID: parseInt(clientID),
+            Name: updatedName,
+          };
+
+          // Make an AJAX PUT request to update the client
+          $.ajax({
+            url: `/client/${clientID}`,
+            type: "PUT",
+            contentType: "application/json",
+            data: JSON.stringify(clientPayload),
+            success: function (response) {
+              alert("Client updated successfully!");
+              console.log("Client updated successfully:", response);
+            },
+            error: function (xhr, status, error) {
+              console.error("Error updating client:", error);
+              alert("An error occurred while updating the client.");
+            },
+          });
+        } else {
+          // Handle invalid input or cancelation by the user
+          console.error("Invalid input or client ID");
+          alert("Invalid input or client ID. Update canceled.");
+        }
+      }
+
+      function deleteClient(clientID) {
+        const clientPayload = {
+          ID: parseInt(clientID),
+        };
+        $.ajax({
+          url: `/client/${clientID}`,
+          type: "DELETE",
+          contentType: "application/json",
+          data: JSON.stringify(clientPayload),
+          success: function (response) {
+            alert("Client deleted successfully!");
+            console.log("Client deleted successfully:", response);
+          },
+          error: function (xhr, status, error) {
+            console.error("Error deleting client:", error);
+            alert("An error occurred while deleting the client.");
           },
         });
       }

@@ -41,15 +41,15 @@
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-      $(document).ready(function () {
+      $(document).ready(function getLoginStatus() {
         $("#loginForm").on("submit", function (event) {
           event.preventDefault(); // Prevent the default form submission behavior
-          const loginSuccess = true;
+          const loginSuccess = true; // Replace with your actual login logic
 
           if (loginSuccess) {
             // Call REST API endpoint using AJAX
             $.ajax({
-              url: "/login/",
+              url: "/login",
               type: "POST",
               contentType: "application/json",
               data: JSON.stringify({
@@ -59,16 +59,8 @@
               success: function (data) {
                 console.log(data); // Handle the API response as needed
 
-                // Redirect based on user_type received
-                if (data.user_type === "Owner") {
-                  // Redirect to AdminDashboard if recognized as Owner
-                  window.location.href = "/owner-dashboard";
-                } else if (data.user_type === "Staff") {
-                  // Redirect to StaffDashboard if recognized as Staff
-                  window.location.href = "/admin-dashboard";
-                } else {
-                  console.log("Unknown user type");
-                }
+                // Redirect to admin dashboard
+                window.location.href = "/admin-dashboard";
               },
               error: function (xhr, status, error) {
                 console.error("Error:", error);
@@ -79,11 +71,6 @@
           }
         });
       });
-
-      function logout() {
-        // Redirect to the "/" endpoint (App.Index)
-        window.location.href = "/";
-      }
     </script>
   </body>
 </html>

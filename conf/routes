@@ -27,7 +27,6 @@ GET     /unit/:id                                   App.GetUnit
 PUT     /unit/:id                                   App.UpdateUnit
 DELETE  /unit/:id                                   App.DeleteUnit
 GET     /units                                      App.ListUnits
-GET     /unit/client/:id                            App.GetClientUnits
 GET     /sales/total                                App.GetTotalSales
 GET     /orders/completed                           App.GetOrderCompleted
 GET     /orders/pending                             App.GetOrderPending

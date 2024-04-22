@@ -139,7 +139,7 @@ func Register() {
 				Args: []*revel.MethodArg{ 
 				},
 				RenderArgNames: map[int][]string{ 
-					23: []string{ 
+					24: []string{ 
 					},
 				},
 			},
@@ -234,6 +234,14 @@ func Register() {
 				},
 			},
 			&revel.MethodType{
+				Name: "AssignUnitsToClient",
+				Args: []*revel.MethodArg{ 
+					&revel.MethodArg{Name: "clientID", Type: reflect.TypeOf((*int)(nil)) },
+				},
+				RenderArgNames: map[int][]string{ 
+				},
+			},
+			&revel.MethodType{
 				Name: "AddUnit",
 				Args: []*revel.MethodArg{ 
 				},
@@ -267,14 +275,6 @@ func Register() {
 			&revel.MethodType{
 				Name: "ListUnits",
 				Args: []*revel.MethodArg{ 
-				},
-				RenderArgNames: map[int][]string{ 
-				},
-			},
-			&revel.MethodType{
-				Name: "GetClientUnits",
-				Args: []*revel.MethodArg{ 
-					&revel.MethodArg{Name: "clientID", Type: reflect.TypeOf((*int)(nil)) },
 				},
 				RenderArgNames: map[int][]string{ 
 				},

@@ -217,6 +217,15 @@ func (_ tApp) GetLoginStatus(
 	return revel.MainRouter.Reverse("App.GetLoginStatus", args).URL
 }
 
+func (_ tApp) AssignUnitsToClient(
+		clientID int,
+		) string {
+	args := make(map[string]string)
+	
+	revel.Unbind(args, "clientID", clientID)
+	return revel.MainRouter.Reverse("App.AssignUnitsToClient", args).URL
+}
+
 func (_ tApp) AddUnit(
 		) string {
 	args := make(map[string]string)
@@ -256,15 +265,6 @@ func (_ tApp) ListUnits(
 	args := make(map[string]string)
 	
 	return revel.MainRouter.Reverse("App.ListUnits", args).URL
-}
-
-func (_ tApp) GetClientUnits(
-		clientID int,
-		) string {
-	args := make(map[string]string)
-	
-	revel.Unbind(args, "clientID", clientID)
-	return revel.MainRouter.Reverse("App.GetClientUnits", args).URL
 }
 
 func (_ tApp) GetTotalSales(

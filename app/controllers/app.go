@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"strconv"
 	"warehouse-app/app/helpers"
 	"warehouse-app/app/models"
 
@@ -197,12 +198,40 @@ func (c App) GetLoginStatus() revel.Result {
 		return c.RenderJSON(map[string]interface{}{"error": "Invalid JSON format"})
 	}
 
+	// Check login credentials and retrieve staff information
 	loggedInStaff, err := staff.GetLoginStatus()
 	if err != nil {
 		return c.RenderJSON(map[string]interface{}{"error": err.Error()})
 	}
 
-	return c.RenderJSON(loggedInStaff)
+	// Store only the staff ID in session
+	c.Session["ID"] = strconv.Itoa(int(loggedInStaff.ID))
+	c.Session.SetDefaultExpiration()
+
+	return c.RenderJSON(map[string]interface{}{"ID": loggedInStaff.ID})
+}
+
+func (c App) AssignUnitsToClient(clientID int) revel.Result {
+	// Parse JSON body to get units data
+	var units []models.Unit
+	if err := c.parseBodyUnit(&units); err != nil {
+		c.Flash.Error("Invalid JSON format")
+		return c.Redirect("/admin-dashboard")
+	}
+
+	// Assign each unit to the client
+	for _, unit := range units {
+		unit.ClientID = clientID // Set the client ID for the unit
+		// Add unit to the database
+		if err := unit.AddUnit(); err != nil {
+			c.Flash.Error("Error assigning units to client")
+			return c.Redirect("/admin-dashboard")
+		}
+	}
+
+	// Units assigned successfully, show success message or redirect
+	c.Flash.Success("Units assigned successfully")
+	return c.Redirect("/admin-dashboard")
 }
 
 func (c App) AddUnit() revel.Result {
@@ -276,18 +305,18 @@ func (c App) ListUnits() revel.Result {
 	return c.RenderJSON(data)
 }
 
-func (c App) GetClientUnits(clientID int) revel.Result {
-	units, err := models.GetClientUnits(clientID)
-	if err != nil {
-		c.Response.Status = 500 // Internal Server Error
-		return c.RenderJSON(map[string]interface{}{
-			"error": "Failed to fetch client units",
-		})
-	}
+// func (c App) GetClientUnits(clientID int) revel.Result {
+// 	units, err := models.GetClientUnits(clientID)
+// 	if err != nil {
+// 		c.Response.Status = 500 // Internal Server Error
+// 		return c.RenderJSON(map[string]interface{}{
+// 			"error": "Failed to fetch client units",
+// 		})
+// 	}
 
-	c.Response.Status = 200 // OK
-	return c.RenderJSON(units)
-}
+// 	c.Response.Status = 200 // OK
+// 	return c.RenderJSON(units)
+// }
 
 func (c App) GetTotalSales() revel.Result {
 	unitModel := models.Unit{}
@@ -362,7 +391,7 @@ func (c App) AddWarehouse() revel.Result {
 func (c App) GetWarehouse(id int64) revel.Result {
 	warehouse, err := models.GetWarehouse(id)
 	if err != nil {
-		c.Response.Status = 404 // or appropriate error status code
+		c.Response.Status = 404
 		return nil
 	}
 	c.Response.Status = 200 // Success status code

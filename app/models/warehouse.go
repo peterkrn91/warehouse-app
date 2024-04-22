@@ -2,17 +2,12 @@ package models
 
 import (
 	"github.com/jinzhu/gorm"
-	"github.com/pkg/errors"
 	"github.com/revel/revel"
 )
 
 type Client struct {
 	ID   int64  `gorm:"primaryKey"`
 	Name string `gorm:"type:varchar(255);default:NULL"`
-}
-
-func (client Client) Validate(v *revel.Validation) {
-	v.Check(client.Name, revel.ValidRequired(), revel.ValidMinSize(3), revel.ValidMaxSize(100)).Message("Name must be between 3-100 characters long")
 }
 
 type Staff struct {
@@ -112,15 +107,10 @@ func (staff *Staff) GetLoginStatus() (*Staff, error) {
 	if result.Error != nil && result.Error != gorm.ErrRecordNotFound {
 		return nil, result.Error
 	}
-
-	if fetchedStaff.UserType != "Staff" && fetchedStaff.UserType != "Owner" {
-		return nil, errors.New("invalid user type")
-	}
-
 	return &fetchedStaff, nil
 }
 
-func (staff *Staff) Logout(c *revel.Controller) {
+func (staff *Staff) LogoutUser(c *revel.Controller) {
 	// Clear session data
 	c.Session["id"] = nil
 	c.Redirect("/")
@@ -217,7 +207,7 @@ func (unit Unit) GetLatestOrders() ([]Unit, error) {
 }
 
 // GetClientUnits retrieves all units belonging to a specific client
-func GetClientUnits(clientID int) ([]Unit, error) {
+func GetClientOrders(clientID int) ([]Unit, error) {
 	var clientUnits []Unit
 
 	// Fetch units belonging to the specified client
