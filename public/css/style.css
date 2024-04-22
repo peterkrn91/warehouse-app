@@ -26,15 +26,24 @@
   font-size: 1.7rem;
 }
 
+/* Remove underline from anchor tags */
 a {
   text-decoration: none;
 }
 
+/* Remove default list styling */
 li {
   list-style: none;
 }
 
+/* Prevent horizontal overflow */
 html {
+  overflow-x: hidden;
+}
+
+/* Body styles */
+body {
+  background: var(--grey);
   overflow-x: hidden;
 }
 
@@ -44,11 +53,7 @@ body.dark {
   --dark: #fbfbfb;
 }
 
-body {
-  background: var(--grey);
-  overflow-x: hidden;
-}
-
+/* Sidebar styles */
 .sidebar {
   position: fixed;
   top: 0;
@@ -266,35 +271,6 @@ body {
   cursor: pointer;
 }
 
-.content nav .notif {
-  font-size: 20px;
-  position: relative;
-}
-
-.content nav .notif .count {
-  position: absolute;
-  top: -6px;
-  right: -6px;
-  width: 20px;
-  height: 20px;
-  background: var(--danger);
-  border-radius: 50%;
-  color: var(--light);
-  border: 2px solid var(--light);
-  font-weight: 700;
-  font-size: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.content nav .profile img {
-  width: 36px;
-  height: 36px;
-  object-fit: cover;
-  border-radius: 50%;
-}
-
 .content nav .theme-toggle {
   display: block;
   min-width: 50px;
@@ -340,39 +316,6 @@ body {
   font-weight: 600;
   margin-bottom: 10px;
   color: var(--dark);
-}
-
-.content main .header .left .breadcrumb {
-  display: flex;
-  align-items: center;
-  grid-gap: 16px;
-}
-
-.content main .header .left .breadcrumb li {
-  color: var(--dark);
-}
-
-.content main .header .left .breadcrumb li a {
-  color: var(--dark-grey);
-  pointer-events: none;
-}
-
-.content main .header .left .breadcrumb li a.active {
-  color: var(--primary);
-  pointer-events: none;
-}
-
-.content main .header .report {
-  height: 36px;
-  padding: 0 16px;
-  border-radius: 36px;
-  background: var(--primary);
-  color: var(--light);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  grid-gap: 10px;
-  font-weight: 500;
 }
 
 .content main .insights {
@@ -524,51 +467,6 @@ body {
   background: var(--warning);
 }
 
-.content main .bottom-data .reminders {
-  flex-grow: 1;
-  flex-basis: 300px;
-}
-
-.content main .bottom-data .reminders .task-list {
-  width: 100%;
-}
-
-.content main .bottom-data .reminders .task-list li {
-  width: 100%;
-  margin-bottom: 16px;
-  background: var(--grey);
-  padding: 14px 10px;
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.content main .bottom-data .reminders .task-list li .task-title {
-  display: flex;
-  align-items: center;
-}
-
-.content main .bottom-data .reminders .task-list li .task-title p {
-  margin-left: 6px;
-}
-
-.content main .bottom-data .reminders .task-list li .bx {
-  cursor: pointer;
-}
-
-.content main .bottom-data .reminders .task-list li.completed {
-  border-left: 10px solid var(--success);
-}
-
-.content main .bottom-data .reminders .task-list li.not-completed {
-  border-left: 10px solid var(--danger);
-}
-
-.content main .bottom-data .reminders .task-list li:last-child {
-  margin-bottom: 0;
-}
-
 .modal {
   display: none;
   position: fixed;
@@ -702,11 +600,6 @@ button {
     border-radius: 0 36px 36px 0;
   }
 
-  .content nav form.show ~ .notif,
-  .content nav form.show ~ .profile {
-    display: none;
-  }
-
   .content main .insights {
     grid-template-columns: 1fr;
   }
@@ -716,10 +609,6 @@ button {
   }
 
   .content main .bottom-data .orders table {
-    min-width: 340px;
-  }
-
-  .content main .bottom-data .reminders .task-list {
     min-width: 340px;
   }
 }
