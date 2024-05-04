@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../../../public/css/style.css" />
+
+    <title>Owner Dashboard</title>
+  </head>
+
+  <body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <a href="/owner/dashboard" class="logo">
+        <i class="bx bx-code-alt"></i>
+        <div class="logo-name"><span>Where</span>House</div>
+      </a>
+      <ul class="side-menu">
+        <li class="active">
+          <a href="#"><i class="bx bx-analyse"></i>Owner Dashboard</a>
+        </li>
+      </ul>
+
+      <ul class="side-menu">
+        <li>
+          <a href="#" class="logout">
+            <i class="bx bx-log-out-circle" id="logoutButton"></i>
+            Logout
+          </a>
+        </li>
+      </ul>
+    </div>
+    <!-- End of Sidebar -->
+
+    <!-- Main Content -->
+    <div class="content">
+      <!-- Navbar -->
+      <nav>
+        <i class="bx bx-menu"></i>
+        <form action="#"></form>
+        <input type="checkbox" id="theme-toggle" hidden />
+        <label for="theme-toggle" class="theme-toggle"></label>
+      </nav>
+      <!-- End of Navbar -->
+
+      <main>
+        <div class="header">
+          <div class="left">
+            <h1>Owner Dashboard</h1>
+            <!-- Rendered staff ID from Go Revel -->
+            <h2>Owner ID: <span id="ownerID"></span></h2>
+          </div>
+        </div>
+        <!-- Insights -->
+        <ul class="insights">
+          <li id="orderCompleted">
+            <i class="bx bx-calendar-check"></i>
+            <span class="info">
+              <p>Order Completed</p>
+              <!-- Dynamically add <h3> here to show numbers of order completed -->
+              <h3 id="totalOrderCompleted"></h3>
+            </span>
+          </li>
+          <li id="orderPending">
+            <i class="bx bx-hourglass"></i>
+            <span class="info">
+              <p>Order Pending</p>
+              <!-- Dynamically add <h3> here to show numbers of order pending -->
+              <h3 id="totalOrderPending"></h3>
+            </span>
+          </li>
+          <li id="totalClients">
+            <i class="bx bx-male"></i>
+            <span class="info">
+              <p>Total Clients</p>
+              <!-- Dynamically add value here to show total clients -->
+              <h3 id="totalClientsValue"></h3>
+            </span>
+          </li>
+          <li id="totalSales">
+            <i class="bx bx-dollar"></i>
+            <span class="info">
+              <p>Total Sales</p>
+              <!-- Dynamically add value here to show total sales -->
+              <h3 id="totalSalesValue"></h3>
+            </span>
+          </li>
+        </ul>
+        <!-- End of Insights -->
+
+        <div class="bottom-data">
+          <div class="orders">
+            <div class="header">
+              <i class="bx bx-receipt" id="showOrdersBtn"></i>
+              <h3>Orders List</h3>
+            </div>
+            <table id="orderTable">
+              <thead>
+                <tr>
+                  <th>Order ID</th>
+                  <th>Order Name</th>
+                  <th>Order Date</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="orderTableBody">
+                <!-- Dynamic rows will be added here -->
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Client's List -->
+          <div class="orders">
+            <div class="header">
+              <i class="bx bx-male" id="showClientsBtn"></i>
+              <h3>Clients List</h3>
+            </div>
+            <table id="clientTable">
+              <thead>
+                <tr>
+                  <th>Client ID</th>
+                  <th>Client Name</th>
+                </tr>
+              </thead>
+              <tbody id="clientTableBody">
+                <!-- Dynamic rows will be added here -->
+              </tbody>
+            </table>
+
+            <ul class="task-list">
+              <!-- Modal for the Clients List -->
+              <div class="modalBig" id="showClientsList">
+                <div class="modal-content-big">
+                  <span class="close">&times;</span>
+                  <h2>Clients List</h2>
+                </div>
+              </div>
+
+              <!-- Modal for the Orders List -->
+              <div class="modalBig" id="showOrdersList">
+                <div class="modal-content-big">
+                  <span class="close">&times;</span>
+                  <h2>Orders List</h2>
+                </div>
+              </div>
+            </ul>
+          </div>
+          <!-- End of Modals -->
+        </div>
+      </main>
+    </div>
+    <script>
+      const sideLinks = document.querySelectorAll(
+        ".sidebar .side-menu li a:not(.logout)"
+      );
+
+      sideLinks.forEach((item) => {
+        const li = item.parentElement;
+        item.addEventListener("click", () => {
+          sideLinks.forEach((i) => {
+            i.parentElement.classList.remove("active");
+          });
+          li.classList.add("active");
+        });
+      });
+
+      const menuBar = document.querySelector(".content nav .bx.bx-menu");
+      const sideBar = document.querySelector(".sidebar");
+
+      menuBar.addEventListener("click", () => {
+        sideBar.classList.toggle("close");
+      });
+
+      const toggler = document.getElementById("theme-toggle");
+
+      toggler.addEventListener("change", function () {
+        if (this.checked) {
+          document.body.classList.add("dark");
+        } else {
+          document.body.classList.remove("dark");
+        }
+      });
+
+      const checkmarkIcons = document.querySelectorAll(".reminder .bx-check");
+
+      checkmarkIcons.forEach((icon) => {
+        icon.addEventListener("click", () => {
+          if (icon.classList.contains("bx-check")) {
+            icon.classList.replace("bx-check", "bx-x");
+          } else {
+            icon.classList.replace("bx-x", "bx-check");
+          }
+        });
+      });
+    </script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="../../../public/js/index.js"></script>
+    <script>
+      $(document).ready(function () {
+        // Fetch clients when the page loads
+        getTotalClients();
+
+        // Fetch sales when the page loads
+        getTotalSales();
+
+        // Fetch total order completed when the page loads
+        getOrderCompleted();
+
+        // Fetch total order pending when the page loads
+        getOrderPending();
+
+        // Fetch recent orders
+        getLatestOrders();
+
+        // Fetch all clients in currently logged-in staff
+        getListClients();
+
+        // Event listener for Complete Order button click
+        $("#completeOrderBtn").on("click", function (event) {
+          event.preventDefault(); // Prevent default form submission
+
+          // Call the completeOrder function here
+          completeOrder();
+        });
+
+        // Handle form submission
+        $("#addClientModal").on("submit", function (event) {
+          event.preventDefault(); // Prevent default form submission
+
+          // Call addClient function
+          addClient();
+        });
+
+        $("#editClientModal").on("submit", function (event) {
+          event.preventDefault(); // Prevent default form submission
+
+          // Get the client ID and updated name from the input fields
+          const clientID = $("#clientIdEditInput").val();
+          const updatedName = $("#clientNameEditInput").val();
+
+          // Call editClient function with the retrieved client ID and updated name
+          editClient(clientID, updatedName);
+        });
+
+        $("#deleteClientModal").on("submit", function (event) {
+          event.preventDefault(); // Prevent default form submission
+
+          // Get the client ID and updated name from the input fields
+          const clientID = $("#clientIdDeleteInput").val();
+
+          // Call editClient function with the retrieved client ID and updated name
+          deleteClient(clientID);
+        });
+
+        //logout function
+        $("#logoutButton").on("click", function () {
+          // Call the logout function when the logout button is clicked
+          logout();
+        });
+      });
+    </script>
+    <script>
+      function logout() {
+        $.ajax({
+          url: "/logout",
+          type: "GET",
+          success: function (data) {
+            console.log("Logout successful");
+            // Redirect to the homepage or any other desired page after logout
+            window.location.href = "/";
+          },
+          error: function (xhr, status, error) {
+            console.error("Error:", error);
+          },
+        });
+      }
+
+      function getOrderCompleted() {
+        $.ajax({
+          url: "/orders/completed",
+          type: "GET",
+          success: function (response) {
+            // Clear the span body with id "orderCompleted"
+            $("#totalOrderCompleted").empty();
+
+            // get response length
+            var count = response.length;
+            // Append count value into tag that uses id "orderCompleted"
+            $("#totalOrderCompleted").text(count);
+          },
+          error: function (xhr, status, error) {
+            console.error(error);
+            alert("An error occurred while fetching the orders.");
+          },
+        });
+      }
+
+      function getOrderPending() {
+        $.ajax({
+          url: "/orders/pending",
+          type: "GET",
+          success: function (response) {
+            // Clear the span body with id "orderPending"
+            $("#totalOrderPending").empty();
+
+            // get response length
+            var count = response.length;
+            // Append count value into tag that uses id "orderPending"
+            $("#totalOrderPending").text(count);
+          },
+          error: function (xhr, status, error) {
+            console.error(error);
+            alert("An error occurred while fetching the orders.");
+          },
+        });
+      }
+
+      function getTotalClients() {
+        $.ajax({
+          url: "/clients",
+          type: "GET",
+          success: function (response) {
+            // Clear the content inside the <h3> tag
+            $("#totalClientsValue").empty();
+
+            // get response length
+            var totalClients = response.length;
+            // Set the text content of the <h3> tag to the total clients value
+            $("#totalClientsValue").text(totalClients);
+          },
+          error: function (xhr, status, error) {
+            console.error(error);
+            alert("An error occurred while fetching the clients.");
+          },
+        });
+      }
+
+      function getTotalSales() {
+        $.ajax({
+          url: "/sales/total",
+          type: "GET",
+          success: function (response) {
+            // Clear the span body with id "totalSales"
+            $("#totalSalesValue").empty();
+
+            var totalSales = response;
+            // Set the text content of the <h3> tag to the total sales value
+            $("#totalSalesValue").text(totalSales);
+          },
+          error: function (xhr, status, error) {
+            console.error(error);
+            alert("An error occurred while fetching the sales.");
+          },
+        });
+      }
+
+      // Function to add a new row to the table
+      function addOrderRow(orderID, orderName, orderDate, status) {
+        var newRow =
+          "<tr>" +
+          "<td>" +
+          orderID +
+          "</td>" +
+          "<td><p>" +
+          orderName +
+          "</p></td>" +
+          "<td>" +
+          orderDate +
+          "</td>" +
+          '<td><span class="status ' +
+          status +
+          '">' +
+          status.charAt(0).toUpperCase() +
+          status.slice(1) +
+          "</span></td>" +
+          "</tr>";
+
+        $("#orderTableBody").append(newRow);
+      }
+
+      // AJAX function to fetch recent orders and update the table
+      function getLatestOrders() {
+        $.ajax({
+          url: "/orders/latest",
+          type: "GET",
+          success: function (response) {
+            // Clear the table body before adding new rows
+            $("#orderTableBody").empty();
+
+            // Loop through the response to add rows to the table
+            for (var i = 0; i < response.length; i++) {
+              var order = response[i];
+              addOrderRow(order.ID, order.name, order.order_date, order.status);
+            }
+          },
+          error: function (xhr, status, error) {
+            console.error(error);
+            alert("An error occurred while fetching the latest orders.");
+          },
+        });
+      }
+
+      function getListClients() {
+        $.ajax({
+          url: "/clients",
+          type: "GET",
+          success: function (response) {
+            $("#clientTableBody").empty(); // Clear the table body before adding new rows
+
+            // Loop through the response to add rows to the table
+            for (var i = 0; i < response.length; i++) {
+              var client = response[i];
+              addClientRow(client.ID, client.Name); // Call function to add row
+            }
+          },
+          error: function (xhr, status, error) {
+            console.error(error);
+            alert("An error occurred while fetching the clients.");
+          },
+        });
+      }
+
+      function addClientRow(id, name) {
+        var newRow =
+          "<tr>" + "<td>" + id + "</td>" + "<td>" + name + "</td>" + "</tr>";
+
+        $("#clientTableBody").append(newRow); // Append row to table body
+      }
+
+      // ownerID retrieved from back-end
+      const ownerID = "{{.ownerIDInterface}}";
+      document.getElementById("ownerID").textContent = ownerID;
+      console.log("OwnerID in OwnerDashboard:", ownerID);
+
+      // Function to send AJAX request to complete order
+      function completeOrder() {
+        let orderId = $("#orderIdInput").val(); // Get the order ID from the input field
+
+        // Check if the order ID is a valid integer
+        if (isNaN(orderId) || orderId <= 0) {
+          alert("Please enter a valid order ID.");
+          return;
+        }
+
+        // AJAX request to update order status
+        $.ajax({
+          url: "/orders/update",
+          type: "PUT",
+          contentType: "application/json",
+          data: JSON.stringify({ id: parseInt(orderId) }),
+          success: function (response) {
+            alert("Order's status is now completed!");
+            console.log("Order updated successfully:", response);
+            // Close the modal
+            document.getElementById("orderModal").style.display = "none";
+            // Clear input field
+            $("#orderIdInput").val("");
+          },
+          error: function (xhr, status, error) {
+            console.error("Error completing order:", xhr.responseText);
+            alert("An error occurred while completing the order.");
+          },
+        });
+      }
+
+      function addClient() {
+        let clientName = $("#clientNameInput").val(); // Get the client name from the input field
+
+        // Make an AJAX POST request to add the client
+        $.ajax({
+          url: "/client",
+          type: "POST",
+          contentType: "application/json",
+          data: JSON.stringify({ Name: clientName }),
+          success: function (response) {
+            alert("Client added successfully!");
+            console.log("Client added successfully:", response);
+            // Close the modal
+            document.getElementById("orderModal").style.display = "none";
+            // Clear input field
+            $("#clientNameInput").val("");
+          },
+          error: function (xhr, status, error) {
+            console.error("Error adding client:", error);
+            alert("An error occurred while adding the client.");
+          },
+        });
+      }
+
+      // Function to edit the client
+      function editClient(clientID, updatedName) {
+        // Check if the user entered a name and if the ID is valid
+        if (updatedName && clientID) {
+          // Construct the JSON payload
+          const clientPayload = {
+            ID: parseInt(clientID),
+            Name: updatedName,
+          };
+
+          // Make an AJAX PUT request to update the client
+          $.ajax({
+            url: `/client/${clientID}`,
+            type: "PUT",
+            contentType: "application/json",
+            data: JSON.stringify(clientPayload),
+            success: function (response) {
+              alert("Client updated successfully!");
+              console.log("Client updated successfully:", response);
+              // Close the modal
+              document.getElementById("orderModal").style.display = "none";
+              // Clear input field
+              $("#clientIdEditInput").val("");
+              $("#clientNameEditInput").val("");
+            },
+            error: function (xhr, status, error) {
+              console.error("Error updating client:", error);
+              alert("An error occurred while updating the client.");
+            },
+          });
+        } else {
+          // Handle invalid input or cancelation by the user
+          console.error("Invalid input or client ID");
+          alert("Invalid input or client ID. Update canceled.");
+        }
+      }
+
+      function deleteClient(clientID) {
+        const clientPayload = {
+          ID: parseInt(clientID),
+        };
+        $.ajax({
+          url: `/client/${clientID}`,
+          type: "DELETE",
+          contentType: "application/json",
+          data: JSON.stringify(clientPayload),
+          success: function (response) {
+            alert("Client deleted successfully!");
+            console.log("Client deleted successfully:", response);
+            // Close the modal
+            document.getElementById("orderModal").style.display = "none";
+            // Clear input field
+            $("#clientIdDeleteInput").val("");
+          },
+          error: function (xhr, status, error) {
+            console.error("Error deleting client:", error);
+            alert("An error occurred while deleting the client.");
+          },
+        });
+      }
+    </script>
+  </body>
+</html>

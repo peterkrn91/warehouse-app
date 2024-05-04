@@ -125,21 +125,9 @@ func Register() {
 				Args: []*revel.MethodArg{ 
 				},
 				RenderArgNames: map[int][]string{ 
-					12: []string{ 
-					},
-				},
-			},
-			
-		})
-	
-	revel.RegisterController((*controllers1.App)(nil),
-		[]*revel.MethodType{
-			&revel.MethodType{
-				Name: "Index",
-				Args: []*revel.MethodArg{ 
-				},
-				RenderArgNames: map[int][]string{ 
-					24: []string{ 
+					58: []string{ 
+						"staffIDInterface",
+						"warehouseIDInterface",
 					},
 				},
 			},
@@ -189,6 +177,13 @@ func Register() {
 				},
 			},
 			&revel.MethodType{
+				Name: "ListClientsByWarehouses",
+				Args: []*revel.MethodArg{ 
+				},
+				RenderArgNames: map[int][]string{ 
+				},
+			},
+			&revel.MethodType{
 				Name: "AddStaff",
 				Args: []*revel.MethodArg{ 
 				},
@@ -227,21 +222,6 @@ func Register() {
 				},
 			},
 			&revel.MethodType{
-				Name: "GetLoginStatus",
-				Args: []*revel.MethodArg{ 
-				},
-				RenderArgNames: map[int][]string{ 
-				},
-			},
-			&revel.MethodType{
-				Name: "AssignUnitsToClient",
-				Args: []*revel.MethodArg{ 
-					&revel.MethodArg{Name: "clientID", Type: reflect.TypeOf((*int)(nil)) },
-				},
-				RenderArgNames: map[int][]string{ 
-				},
-			},
-			&revel.MethodType{
 				Name: "AddUnit",
 				Args: []*revel.MethodArg{ 
 				},
@@ -273,7 +253,7 @@ func Register() {
 				},
 			},
 			&revel.MethodType{
-				Name: "ListUnits",
+				Name: "ListLatestOrdersByWarehouses",
 				Args: []*revel.MethodArg{ 
 				},
 				RenderArgNames: map[int][]string{ 
@@ -287,6 +267,13 @@ func Register() {
 				},
 			},
 			&revel.MethodType{
+				Name: "GetTotalSalesByWarehouse",
+				Args: []*revel.MethodArg{ 
+				},
+				RenderArgNames: map[int][]string{ 
+				},
+			},
+			&revel.MethodType{
 				Name: "GetOrderCompleted",
 				Args: []*revel.MethodArg{ 
 				},
@@ -294,7 +281,21 @@ func Register() {
 				},
 			},
 			&revel.MethodType{
+				Name: "GetOrderCompletedByWarehouse",
+				Args: []*revel.MethodArg{ 
+				},
+				RenderArgNames: map[int][]string{ 
+				},
+			},
+			&revel.MethodType{
 				Name: "GetOrderPending",
+				Args: []*revel.MethodArg{ 
+				},
+				RenderArgNames: map[int][]string{ 
+				},
+			},
+			&revel.MethodType{
+				Name: "GetOrderPendingByWarehouse",
 				Args: []*revel.MethodArg{ 
 				},
 				RenderArgNames: map[int][]string{ 
@@ -331,6 +332,14 @@ func Register() {
 				},
 			},
 			&revel.MethodType{
+				Name: "GetWarehouseByStaffID",
+				Args: []*revel.MethodArg{ 
+					&revel.MethodArg{Name: "id", Type: reflect.TypeOf((*int64)(nil)) },
+				},
+				RenderArgNames: map[int][]string{ 
+				},
+			},
+			&revel.MethodType{
 				Name: "UpdateWarehouse",
 				Args: []*revel.MethodArg{ 
 					&revel.MethodArg{Name: "id", Type: reflect.TypeOf((*int64)(nil)) },
@@ -358,14 +367,37 @@ func Register() {
 			
 		})
 	
-	revel.RegisterController((*controllers1.OwnerDashboard)(nil),
+	revel.RegisterController((*controllers1.LoginPage)(nil),
 		[]*revel.MethodType{
 			&revel.MethodType{
 				Name: "Index",
 				Args: []*revel.MethodArg{ 
 				},
 				RenderArgNames: map[int][]string{ 
-					12: []string{ 
+					21: []string{ 
+					},
+				},
+			},
+			&revel.MethodType{
+				Name: "UserLogin",
+				Args: []*revel.MethodArg{ 
+				},
+				RenderArgNames: map[int][]string{ 
+				},
+			},
+			
+		})
+	
+	revel.RegisterController((*controllers1.OwnerDashboard)(nil),
+		[]*revel.MethodType{
+			&revel.MethodType{
+				Name: "Index",
+				Args: []*revel.MethodArg{ 
+					&revel.MethodArg{Name: "ownerID", Type: reflect.TypeOf((*int64)(nil)) },
+				},
+				RenderArgNames: map[int][]string{ 
+					20: []string{ 
+						"ownerIDInterface",
 					},
 				},
 			},

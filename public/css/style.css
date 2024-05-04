@@ -318,6 +318,20 @@ body.dark {
   color: var(--dark);
 }
 
+.content main .header .left h2 {
+  font-size: 28px;
+  font-weight: 600;
+  margin-top: 5px;
+  color: var(--dark);
+}
+
+.content main .header .left h3 {
+  font-size: 20px;
+  font-weight: 600;
+  margin-top: 5px;
+  color: var(--dark);
+}
+
 .content main .insights {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));

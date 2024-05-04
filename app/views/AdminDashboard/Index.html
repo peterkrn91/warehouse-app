@@ -15,7 +15,7 @@
   <body>
     <!-- Sidebar -->
     <div class="sidebar">
-      <a href="dashboard.html" class="logo">
+      <a href="/admin/dashboard" class="logo">
         <i class="bx bx-code-alt"></i>
         <div class="logo-name"><span>Where</span>House</div>
       </a>
@@ -23,9 +23,6 @@
         <li class="active">
           <a href="#"><i class="bx bx-analyse"></i>Admin Dashboard</a>
         </li>
-        <!-- <li>
-          <a href="#"><i class="bx bx-group"></i>Clients</a>
-        </li> -->
       </ul>
 
       <ul class="side-menu">
@@ -54,6 +51,9 @@
         <div class="header">
           <div class="left">
             <h1>Admin Dashboard</h1>
+            <!-- Rendered staff ID from Go Revel -->
+            <h2>Staff ID: <span id="staffID"></span></h2>
+            <h3>Warehouse ID: <span id="warehouseID"></span></h3>
           </div>
         </div>
         <!-- Insights -->
@@ -104,6 +104,7 @@
             <table id="orderTable">
               <thead>
                 <tr>
+                  <th>Order ID</th>
                   <th>Order Name</th>
                   <th>Order Date</th>
                   <th>Status</th>
@@ -143,7 +144,7 @@
                   <span class="close">&times;</span>
                   <h2>Create New Order</h2>
                   <!-- Add ID to the form -->
-                  <form id="orderForm">
+                  <form id="orderForm" autocomplete="off">
                     <input
                       type="text"
                       id="clientIdInput"
@@ -191,10 +192,7 @@
                 <div class="modal-content">
                   <span class="close">&times;</span>
                   <h2>Add Client</h2>
-                  <form
-                    id="add-client-form"
-                    onsubmit="addClient(); return false;"
-                  >
+                  <form id="add-client-form">
                     <input
                       type="text"
                       id="clientNameInput"
@@ -307,29 +305,43 @@
         });
       });
     </script>
-    <script></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="../../../public/js/index.js"></script>
     <script>
       $(document).ready(function () {
         // Fetch clients when the page loads
         getTotalClients();
 
         // Fetch sales when the page loads
-        getTotalSales();
+        getTotalSalesByWarehouse();
 
         // Fetch total order completed when the page loads
-        getOrderCompleted();
+        getOrderCompletedByWarehouse();
 
         // Fetch total order pending when the page loads
-        getOrderPending();
+        getOrderPendingByWarehouse();
 
         // Fetch recent orders
-        getLatestOrders();
+        getLatestOrdersByWarehouse();
 
         // Fetch all clients in currently logged-in staff
         getListClients();
 
-        addNewOrder();
+        // Event listener for the form submission inside the order modal
+        $("#orderForm").on("submit", function (event) {
+          event.preventDefault(); // Prevent default form submission
+
+          // Call the addNewOrder function here
+          addNewOrder();
+        });
+
+        // Event listener for Complete Order button click
+        $("#completeOrderBtn").on("click", function (event) {
+          event.preventDefault(); // Prevent default form submission
+
+          // Call the completeOrder function here
+          completeOrder();
+        });
 
         // Handle form submission
         $("#addClientModal").on("submit", function (event) {
@@ -360,27 +372,14 @@
           deleteClient(clientID);
         });
 
-        // Define a map to store staff and warehouse ID mappings
-        const staffWarehouseMap = {
-          1: 10001,
-          2: 10002,
-        };
+        //logout function
+        $("#logoutButton").on("click", function () {
+          // Call the logout function when the logout button is clicked
+          logout();
+        });
       });
-
-      //logout function
-      $("#logoutButton").on("click", function () {
-        // Call the logout function when the logout button is clicked
-        logout();
-      });
-
-      // Event listener for the form submission inside the order modal
-      $("#orderForm form").on("submit", function (event) {
-        event.preventDefault(); // Prevent default form submission
-
-        // Call the addNewOrder function here
-        addNewOrder();
-      });
-
+    </script>
+    <script>
       function logout() {
         $.ajax({
           url: "/logout",
@@ -396,9 +395,9 @@
         });
       }
 
-      function getOrderCompleted() {
+      function getOrderCompletedByWarehouse() {
         $.ajax({
-          url: "/orders/completed",
+          url: "/orders/completed/warehouse",
           type: "GET",
           success: function (response) {
             // Clear the span body with id "orderCompleted"
@@ -416,9 +415,9 @@
         });
       }
 
-      function getOrderPending() {
+      function getOrderPendingByWarehouse() {
         $.ajax({
-          url: "/orders/pending",
+          url: "/orders/pending/warehouse",
           type: "GET",
           success: function (response) {
             // Clear the span body with id "orderPending"
@@ -438,7 +437,7 @@
 
       function getTotalClients() {
         $.ajax({
-          url: "/clients",
+          url: "/clients/warehouse",
           type: "GET",
           success: function (response) {
             // Clear the content inside the <h3> tag
@@ -456,9 +455,9 @@
         });
       }
 
-      function getTotalSales() {
+      function getTotalSalesByWarehouse() {
         $.ajax({
-          url: "/sales/total",
+          url: "/sales/total/warehouse",
           type: "GET",
           success: function (response) {
             // Clear the span body with id "totalSales"
@@ -476,11 +475,14 @@
       }
 
       // Function to add a new row to the table
-      function addOrderRow(user, orderDate, status) {
+      function addOrderRow(orderID, orderName, orderDate, status) {
         var newRow =
           "<tr>" +
+          "<td>" +
+          orderID +
+          "</td>" +
           "<td><p>" +
-          user +
+          orderName +
           "</p></td>" +
           "<td>" +
           orderDate +
@@ -497,9 +499,9 @@
       }
 
       // AJAX function to fetch recent orders and update the table
-      function getLatestOrders() {
+      function getLatestOrdersByWarehouse() {
         $.ajax({
-          url: "/orders/latest",
+          url: "/orders/latest/warehouse",
           type: "GET",
           success: function (response) {
             // Clear the table body before adding new rows
@@ -508,7 +510,7 @@
             // Loop through the response to add rows to the table
             for (var i = 0; i < response.length; i++) {
               var order = response[i];
-              addOrderRow(order.name, order.order_date, order.status);
+              addOrderRow(order.ID, order.name, order.order_date, order.status);
             }
           },
           error: function (xhr, status, error) {
@@ -520,7 +522,7 @@
 
       function getListClients() {
         $.ajax({
-          url: "/clients",
+          url: "/clients/warehouse",
           type: "GET",
           success: function (response) {
             $("#clientTableBody").empty(); // Clear the table body before adding new rows
@@ -528,7 +530,7 @@
             // Loop through the response to add rows to the table
             for (var i = 0; i < response.length; i++) {
               var client = response[i];
-              addClientRow(client.ID, client.Name); // Call function to add row
+              addClientRow(client.client_id, client.name); // Call function to add row
             }
           },
           error: function (xhr, status, error) {
@@ -545,82 +547,31 @@
         $("#clientTableBody").append(newRow); // Append row to table body
       }
 
-      // Define a map to store staff and warehouse ID mappings
-      const staffWarehouseMap = {
-        1: 10001,
-        2: 10002,
-        3: 10003,
-        // Add more mappings as needed
-      };
+      // staffID retrieved from back-end
+      const staffID = "{{.staffIDInterface}}";
+      document.getElementById("staffID").textContent = staffID;
+      console.log("Staff ID in AdminDashboard:", staffID);
 
-      // Function to get the warehouse ID based on staff ID
-      function getWarehouseId(ID) {
-        if (ID in staffWarehouseMap) {
-          return staffWarehouseMap[ID];
-        } else {
-          console.error("Warehouse ID not found for staff ID:", ID);
-          // You can return a default warehouse ID or handle the error as needed
-          return null;
-        }
-      }
-
-      // Function to retrieve a cookie value by its name
-      function getCookie(cookieName) {
-        const cookies = document.cookie.split(";");
-        for (let i = 0; i < cookies.length; i++) {
-          const cookie = cookies[i].trim();
-          if (cookie.startsWith(cookieName + "=")) {
-            // Get the cookie value
-            const cookieValue = cookie.substring(cookieName.length + 1);
-
-            // Decode the cookie value
-            const decodedValue = decodeURIComponent(cookieValue);
-
-            // Check if the cookie value is JSON-marshaled
-            if (decodedValue.startsWith('"') && decodedValue.endsWith('"')) {
-              // Remove the leading and trailing quotes
-              const unquotedValue = decodedValue.slice(1, -1);
-
-              // Parse the JSON-marshaled value
-              const parsedValue = JSON.parse(unquotedValue);
-
-              // Extract and return the ID
-              return parsedValue.ID || null;
-            }
-          }
-        }
-        return null;
-      }
+      // warehouseID retrieved from back-end
+      const warehouseID = "{{.warehouseIDInterface}}";
+      document.getElementById("warehouseID").textContent = warehouseID;
+      console.log("Warehouse ID in AdminDashboard:", warehouseID);
 
       // Function to add a new order with the staff's warehouse ID
       function addNewOrder() {
-        const itemName = $("#itemNameInput").val();
-        const itemDescription = $("#itemDescriptionInput").val();
-        const itemWeight = $("#itemWeightInput").val();
-        const orderDate = $("#orderDateInput").val();
-        const clientId = $("#clientIdInput").val();
-        const status = "pending";
-
-        // Get staff ID from cookies
-        const staffID = parseInt(getCookie("ID"));
-        if (!staffID) {
-          console.error("Staff ID not found in cookies");
-          return;
-        }
-
-        // Get the warehouse ID based on the staff ID
-        const warehouseID = getWarehouseId(staffID);
-        if (!warehouseID) {
-          console.error("Warehouse ID not found for staff ID:", staffID);
-          return;
-        }
+        let itemName = $("#itemNameInput").val();
+        let itemDescription = $("#itemDescriptionInput").val();
+        let itemWeight = $("#itemWeightInput").val();
+        let orderDate = $("#orderDateInput").val();
+        let clientId = $("#clientIdInput").val();
+        let status = "pending";
 
         const orderPayload = [
           {
             name: itemName,
             description: itemDescription,
             kg: parseFloat(itemWeight),
-            warehouse_id: warehouseID,
+            warehouse_id: parseInt(warehouseID),
             client_id: parseInt(clientId),
             order_date: orderDate,
             status: status,
@@ -633,36 +584,73 @@
           contentType: "application/json",
           data: JSON.stringify(orderPayload),
           success: function (response) {
+            alert("Order created successfully!");
             console.log("Order created successfully:", response);
-            // Handle success response as needed
+            // Close the modal
+            document.getElementById("orderModal").style.display = "none";
+            // Clear input fields
+            $("#itemNameInput").val("");
+            $("#itemDescriptionInput").val("");
+            $("#itemWeightInput").val("");
+            $("#orderDateInput").val("");
+            $("#clientIdInput").val("");
+            // Refresh the order list
+            getLatestOrdersByWarehouse();
           },
           error: function (xhr, status, error) {
-            console.error("Error creating order:", error);
+            console.error("Error creating order:", xhr.responseText); // Log detailed error message
             alert("An error occurred while creating the order.");
           },
         });
       }
 
-      function addClient() {
-        const clientName = $("#clientNameInput").val(); // Get the client name from the input field
+      // Function to send AJAX request to complete order
+      function completeOrder() {
+        let orderId = $("#orderIdInput").val(); // Get the order ID from the input field
 
-        // Construct the JSON payload
-        const clientPayload = [
-          {
-            Name: clientName,
+        // Check if the order ID is a valid integer
+        if (isNaN(orderId) || orderId <= 0) {
+          alert("Please enter a valid order ID.");
+          return;
+        }
+
+        // AJAX request to update order status
+        $.ajax({
+          url: "/orders/update",
+          type: "PUT",
+          contentType: "application/json",
+          data: JSON.stringify({ id: parseInt(orderId) }),
+          success: function (response) {
+            alert("Order's status is now completed!");
+            console.log("Order updated successfully:", response);
+            // Close the modal
+            document.getElementById("orderModal").style.display = "none";
+            // Clear input field
+            $("#orderIdInput").val("");
           },
-        ];
+          error: function (xhr, status, error) {
+            console.error("Error completing order:", xhr.responseText);
+            alert("An error occurred while completing the order.");
+          },
+        });
+      }
+
+      function addClient() {
+        let clientName = $("#clientNameInput").val(); // Get the client name from the input field
 
         // Make an AJAX POST request to add the client
         $.ajax({
           url: "/client",
           type: "POST",
           contentType: "application/json",
-          data: JSON.stringify(clientPayload),
+          data: JSON.stringify({ Name: clientName }),
           success: function (response) {
             alert("Client added successfully!");
             console.log("Client added successfully:", response);
-            // Handle success response as needed
+            // Close the modal
+            document.getElementById("orderModal").style.display = "none";
+            // Clear input field
+            $("#clientNameInput").val("");
           },
           error: function (xhr, status, error) {
             console.error("Error adding client:", error);
@@ -690,6 +678,11 @@
             success: function (response) {
               alert("Client updated successfully!");
               console.log("Client updated successfully:", response);
+              // Close the modal
+              document.getElementById("orderModal").style.display = "none";
+              // Clear input field
+              $("#clientIdEditInput").val("");
+              $("#clientNameEditInput").val("");
             },
             error: function (xhr, status, error) {
               console.error("Error updating client:", error);
@@ -715,6 +708,10 @@
           success: function (response) {
             alert("Client deleted successfully!");
             console.log("Client deleted successfully:", response);
+            // Close the modal
+            document.getElementById("orderModal").style.display = "none";
+            // Clear input field
+            $("#clientIdDeleteInput").val("");
           },
           error: function (xhr, status, error) {
             console.error("Error deleting client:", error);
@@ -723,6 +720,5 @@
         });
       }
     </script>
-    <script src="../../../public/js/index.js"></script>
   </body>
 </html>

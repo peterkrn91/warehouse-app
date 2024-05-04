@@ -1,6 +1,8 @@
 package models
 
 import (
+	"fmt"
+
 	"github.com/jinzhu/gorm"
 	"github.com/revel/revel"
 )
@@ -60,11 +62,50 @@ func DeleteClient(id int64) error {
 	return response.Error
 }
 
+// ClientHasUnits checks if a client is associated with any units.
+func ClientHasUnits(clientID int64) (bool, error) {
+	var count int64
+	response := DB.Model(&Unit{}).Where("client_id = ?", clientID).Count(&count)
+	return count > 0, response.Error
+}
+
 // ListClients retrieves a list of all clients from the database.
 func (client Client) ListClients() ([]Client, error) {
 	clients := make([]Client, 0)
 	responses := DB.Find(&clients)
 	return clients, responses.Error
+}
+
+// ListClientsByWarehouses retrieves a list of clients (client ID and name) filtered by warehouse ID from the database using a join query.
+func (unit Unit) ListClientsByWarehouses(warehouseID int) ([]map[string]interface{}, error) {
+	// Define a struct to hold the join result
+	type JoinResult struct {
+		ClientID int64  `gorm:"column:ClientID" json:"client_id"`
+		Name     string `gorm:"column:Name" json:"name"`
+	}
+	var joinResults []JoinResult
+
+	// Perform a join query to fetch client IDs and names for the specified warehouse
+	response := DB.Table("clients").
+		Select("DISTINCT clients.id AS ClientID, clients.name AS Name").
+		Joins("JOIN units ON units.client_id = clients.id").
+		Where("units.warehouse_id = ?", warehouseID).
+		Scan(&joinResults)
+	if response.Error != nil {
+		return nil, response.Error
+	}
+
+	// Convert join results to the desired format
+	clients := make([]map[string]interface{}, 0)
+	for _, result := range joinResults {
+		clientData := map[string]interface{}{
+			"client_id": result.ClientID,
+			"name":      result.Name,
+		}
+		clients = append(clients, clientData)
+	}
+
+	return clients, nil
 }
 
 // AddStaff adds a new staff member to the database.
@@ -101,18 +142,22 @@ func (staff Staff) ListStaffs() ([]Staff, error) {
 	return staffs, response.Error
 }
 
-func (staff *Staff) GetLoginStatus() (*Staff, error) {
+// ValidateLogin checks the login credentials and retrieves staff information by name and password
+func ValidateLogin(name, password string) (*Staff, string, error) {
+	var id int64
 	var fetchedStaff Staff
-	result := DB.Where("name = ? AND password = ?", staff.Name, staff.Password).First(&fetchedStaff)
+	fetchedStaff.ID = id
+	result := DB.Where("name = ? AND password = ?", name, password).First(&fetchedStaff)
 	if result.Error != nil && result.Error != gorm.ErrRecordNotFound {
-		return nil, result.Error
+		return nil, "", result.Error
 	}
-	return &fetchedStaff, nil
+
+	return &fetchedStaff, fetchedStaff.UserType, nil
 }
 
 func (staff *Staff) LogoutUser(c *revel.Controller) {
 	// Clear session data
-	c.Session["id"] = nil
+	c.Session.Del("SessionID")
 	c.Redirect("/")
 }
 
@@ -143,10 +188,10 @@ func DeleteUnit(id int64) error {
 	return response.Error
 }
 
-// ListUnits retrieves a list of all units from the database.
-func (unit Unit) ListUnits() ([]Unit, error) {
+// ListLatestOrdersInEachWarehouses retrieves a list of units filtered by warehouse ID and ordered by order date descending from the database.
+func (unit Unit) ListLatestOrdersByWarehouses(warehouseID int) ([]Unit, error) {
 	units := make([]Unit, 0)
-	response := DB.Find(&units)
+	response := DB.Where("warehouse_id = ?", warehouseID).Order("order_date DESC").Find(&units)
 	return units, response.Error
 }
 
@@ -160,9 +205,25 @@ func (unit Unit) GetTotalSales() (float64, error) {
 		return totalSales, result.Error
 	}
 
-	// Count the number of completed units and multiply by $5 each
+	// Count the number of completed units and multiply by $100 each
 	completedUnits := len(*result.Value.(*[]Unit))
-	totalSales = float64(completedUnits) * 5.0 // Assuming each completed unit contributes $5 to total sales
+	totalSales = float64(completedUnits) * 100.0
+
+	return totalSales, nil
+}
+
+func (unit Unit) GetTotalSalesByWarehouse(warehouseID int) (float64, error) {
+	var totalSales float64
+
+	// Fetch completed units based on warehouse ID
+	result := DB.Model(&Unit{}).Where("status = ? AND warehouse_id = ?", "completed", warehouseID).Find(&[]Unit{})
+	if result.Error != nil && result.Error != gorm.ErrRecordNotFound {
+		return totalSales, result.Error
+	}
+
+	// Count the number of completed units and multiply by $100 each
+	completedUnits := len(*result.Value.(*[]Unit))
+	totalSales = float64(completedUnits) * 100.0
 
 	return totalSales, nil
 }
@@ -180,6 +241,12 @@ func (unit Unit) GetOrderCompleted() ([]Unit, error) {
 	return completedUnits, nil
 }
 
+func (unit Unit) GetOrderCompletedByWarehouse(warehouseID int) ([]Unit, error) {
+	completedUnits := make([]Unit, 0)
+	response := DB.Where("status = ? AND warehouse_id = ?", "completed", warehouseID).Find(&completedUnits)
+	return completedUnits, response.Error
+}
+
 // GetOrderCompleted retrieves all units with status "completed"
 func (unit Unit) GetOrderPending() ([]Unit, error) {
 	var pendingUnits []Unit
@@ -193,12 +260,21 @@ func (unit Unit) GetOrderPending() ([]Unit, error) {
 	return pendingUnits, nil
 }
 
+func (unit Unit) GetOrderPendingByWarehouse(warehouseID int) ([]Unit, error) {
+	pendingUnits := make([]Unit, 0)
+	response := DB.Where("status = ? AND warehouse_id = ?", "pending", warehouseID).Find(&pendingUnits)
+	if response.Error != nil {
+		fmt.Println("Error fetching pending orders:", response.Error)
+	}
+	return pendingUnits, response.Error
+}
+
 // GetLatestOrders retrieves the three latest orders
 func (unit Unit) GetLatestOrders() ([]Unit, error) {
 	var latestOrders []Unit
 
 	// Fetch the three latest orders based on order date
-	result := DB.Order("order_date DESC").Limit(3).Find(&latestOrders)
+	result := DB.Order("order_date DESC").Find(&latestOrders)
 	if result.Error != nil && result.Error != gorm.ErrRecordNotFound {
 		return nil, result.Error
 	}
@@ -206,10 +282,28 @@ func (unit Unit) GetLatestOrders() ([]Unit, error) {
 	return latestOrders, nil
 }
 
-// UpdateUnit updates an existing unit in the database.
-func UpdateOrderStatus(unit *Unit) error {
-	response := DB.Where("id = ?", unit.ID).Save(unit)
-	return response.Error
+// UpdateOrderStatus updates an existing unit's order status in the database (from pending -> completed) if it's currently pending.
+func UpdateOrderStatus(unit *Unit) (Unit, error) {
+	// Fetch the existing unit based on the provided ID
+	existingUnit := &Unit{}
+	result := DB.First(existingUnit, unit.ID)
+	if result.Error != nil {
+		return *existingUnit, result.Error
+	}
+
+	// Check if the existing unit's status is already "completed"
+	if existingUnit.Status == "completed" {
+		return *existingUnit, result.Error
+	}
+
+	// Update the status to "completed" and save the changes
+	existingUnit.Status = "completed"
+	result = DB.Save(existingUnit)
+	if result.Error != nil {
+		return *existingUnit, result.Error
+	}
+
+	return *existingUnit, result.Error // No error, indicating successful update
 }
 
 // GetClientUnits retrieves all units belonging to a specific client
@@ -235,6 +329,13 @@ func (warehouse *Warehouse) AddWarehouse() error {
 func GetWarehouse(id int64) (Warehouse, error) {
 	var warehouse Warehouse
 	response := DB.First(&warehouse, id)
+	return warehouse, response.Error
+}
+
+// GetWarehouseByStaffID retrieves a warehouse by staff ID.
+func GetWarehouseByStaffID(staffID int64) (Warehouse, error) {
+	var warehouse Warehouse
+	response := DB.Where("staff_id = ?", staffID).First(&warehouse)
 	return warehouse, response.Error
 }
 

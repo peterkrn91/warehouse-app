@@ -7,42 +7,45 @@ module:testrunner
 # module:jobs
 
 
-GET     /                                           App.Index
-GET     /logout                                     App.Logout
-GET     /admin-dashboard                            AdminDashboard.Index
-GET     /owner-dashboard                            OwnerDashboard.Index
-POST    /client                                     App.AddClient
-GET     /client/:id                                 App.GetClient
-PUT     /client/:id                                 App.UpdateClient
-DELETE  /client/:id                                 App.DeleteClient
-GET     /clients                                    App.ListClients
-POST    /staff                                      App.AddStaff
-GET     /staff/:id                                  App.GetStaff
-PUT     /staff/:id                                  App.UpdateStaff
-DELETE  /staff/:id                                  App.DeleteStaff
-GET     /staffs                                     App.ListStaffs
-POST    /login                                      App.GetLoginStatus
-POST    /unit                                       App.AddUnit
-GET     /unit/:id                                   App.GetUnit
-PUT     /unit/:id                                   App.UpdateUnit
-DELETE  /unit/:id                                   App.DeleteUnit
-GET     /units                                      App.ListUnits
-GET     /sales/total                                App.GetTotalSales
-GET     /orders/completed                           App.GetOrderCompleted
-GET     /orders/pending                             App.GetOrderPending
-GET     /orders/latest                              App.GetLatestOrders
-PUT     /orders/update                              App.UpdateOrderStatus
-POST    /warehouse                                  App.AddWarehouse
-GET     /warehouse/:id                              App.GetWarehouse
-PUT     /warehouse/:id                              App.UpdateWarehouse
-DELETE  /warehouse/:id                              App.DeleteWarehouse
-GET     /warehouses                                 App.ListWarehouses
+GET     /                                           LoginPage.Index
+POST    /login                                      LoginPage.UserLogin
+GET     /logout                                     AdminDashboard.Logout
+GET     /admin/dashboard                            AdminDashboard.Index
+GET     /owner/dashboard                            OwnerDashboard.Index
+POST    /client                                     AdminDashboard.AddClient
+GET     /client/:id                                 AdminDashboard.GetClient
+PUT     /client/:id                                 AdminDashboard.UpdateClient
+DELETE  /client/:id                                 AdminDashboard.DeleteClient
+GET     /clients/warehouse                          AdminDashboard.ListClientsByWarehouses
+GET     /clients                                    AdminDashboard.ListClients
+POST    /staff                                      AdminDashboard.AddStaff
+GET     /staff/:id                                  AdminDashboard.GetStaff
+PUT     /staff/:id                                  AdminDashboard.UpdateStaff
+DELETE  /staff/:id                                  AdminDashboard.DeleteStaff
+GET     /staffs                                     AdminDashboard.ListStaffs
+POST    /unit                                       AdminDashboard.AddUnit
+GET     /unit/:id                                   AdminDashboard.GetUnit
+PUT     /unit/:id                                   AdminDashboard.UpdateUnit
+DELETE  /unit/:id                                   AdminDashboard.DeleteUnit
+GET     /sales/total                                AdminDashboard.GetTotalSales
+GET     /sales/total/warehouse                      AdminDashboard.GetTotalSalesByWarehouse
+GET     /orders/completed                           AdminDashboard.GetOrderCompleted
+GET     /orders/completed/warehouse                 AdminDashboard.GetOrderCompletedByWarehouse
+GET     /orders/pending                             AdminDashboard.GetOrderPending
+GET     /orders/pending/warehouse                   AdminDashboard.GetOrderPendingByWarehouse
+GET     /orders/latest                              AdminDashboard.GetLatestOrders
+GET     /orders/latest/warehouse                    AdminDashboard.ListLatestOrdersByWarehouses
+PUT     /orders/update                              AdminDashboard.UpdateOrderStatus
+POST    /warehouse                                  AdminDashboard.AddWarehouse
+GET     /warehouse/:id                              AdminDashboard.GetWarehouse
+GET     /warehouse_staff/:id                        AdminDashboard.GetWarehouseByStaffID
+PUT     /warehouse/:id                              AdminDashboard.UpdateWarehouse
+DELETE  /warehouse/:id                              AdminDashboard.DeleteWarehouse
+GET     /warehouses                                 AdminDashboard.ListWarehouses
 
 
-# Ignore favicon requests
-GET     /favicon.ico                            404
 
-# Map static resources from the /app/public folder to the /public path
+# Map static resources from the /LoginPage/public folder to the /public path
 GET     /public/*filepath                       Static.Serve("public")
 
 # Catch all, this will route any request into the controller path

@@ -109,236 +109,245 @@ func (_ tAdminDashboard) Index(
 	return revel.MainRouter.Reverse("AdminDashboard.Index", args).URL
 }
 
-
-type tApp struct {}
-var App tApp
-
-
-func (_ tApp) Index(
+func (_ tAdminDashboard) Logout(
 		) string {
 	args := make(map[string]string)
 	
-	return revel.MainRouter.Reverse("App.Index", args).URL
+	return revel.MainRouter.Reverse("AdminDashboard.Logout", args).URL
 }
 
-func (_ tApp) Logout(
-		) string {
-	args := make(map[string]string)
-	
-	return revel.MainRouter.Reverse("App.Logout", args).URL
-}
-
-func (_ tApp) GetClient(
+func (_ tAdminDashboard) GetClient(
 		id int64,
 		) string {
 	args := make(map[string]string)
 	
 	revel.Unbind(args, "id", id)
-	return revel.MainRouter.Reverse("App.GetClient", args).URL
+	return revel.MainRouter.Reverse("AdminDashboard.GetClient", args).URL
 }
 
-func (_ tApp) AddClient(
+func (_ tAdminDashboard) AddClient(
 		) string {
 	args := make(map[string]string)
 	
-	return revel.MainRouter.Reverse("App.AddClient", args).URL
+	return revel.MainRouter.Reverse("AdminDashboard.AddClient", args).URL
 }
 
-func (_ tApp) UpdateClient(
+func (_ tAdminDashboard) UpdateClient(
 		id int64,
 		) string {
 	args := make(map[string]string)
 	
 	revel.Unbind(args, "id", id)
-	return revel.MainRouter.Reverse("App.UpdateClient", args).URL
+	return revel.MainRouter.Reverse("AdminDashboard.UpdateClient", args).URL
 }
 
-func (_ tApp) DeleteClient(
+func (_ tAdminDashboard) DeleteClient(
 		id int64,
 		) string {
 	args := make(map[string]string)
 	
 	revel.Unbind(args, "id", id)
-	return revel.MainRouter.Reverse("App.DeleteClient", args).URL
+	return revel.MainRouter.Reverse("AdminDashboard.DeleteClient", args).URL
 }
 
-func (_ tApp) ListClients(
+func (_ tAdminDashboard) ListClients(
 		) string {
 	args := make(map[string]string)
 	
-	return revel.MainRouter.Reverse("App.ListClients", args).URL
+	return revel.MainRouter.Reverse("AdminDashboard.ListClients", args).URL
 }
 
-func (_ tApp) AddStaff(
+func (_ tAdminDashboard) ListClientsByWarehouses(
 		) string {
 	args := make(map[string]string)
 	
-	return revel.MainRouter.Reverse("App.AddStaff", args).URL
+	return revel.MainRouter.Reverse("AdminDashboard.ListClientsByWarehouses", args).URL
 }
 
-func (_ tApp) GetStaff(
+func (_ tAdminDashboard) AddStaff(
+		) string {
+	args := make(map[string]string)
+	
+	return revel.MainRouter.Reverse("AdminDashboard.AddStaff", args).URL
+}
+
+func (_ tAdminDashboard) GetStaff(
 		id int64,
 		) string {
 	args := make(map[string]string)
 	
 	revel.Unbind(args, "id", id)
-	return revel.MainRouter.Reverse("App.GetStaff", args).URL
+	return revel.MainRouter.Reverse("AdminDashboard.GetStaff", args).URL
 }
 
-func (_ tApp) UpdateStaff(
+func (_ tAdminDashboard) UpdateStaff(
 		id int64,
 		) string {
 	args := make(map[string]string)
 	
 	revel.Unbind(args, "id", id)
-	return revel.MainRouter.Reverse("App.UpdateStaff", args).URL
+	return revel.MainRouter.Reverse("AdminDashboard.UpdateStaff", args).URL
 }
 
-func (_ tApp) DeleteStaff(
+func (_ tAdminDashboard) DeleteStaff(
 		id int64,
 		) string {
 	args := make(map[string]string)
 	
 	revel.Unbind(args, "id", id)
-	return revel.MainRouter.Reverse("App.DeleteStaff", args).URL
+	return revel.MainRouter.Reverse("AdminDashboard.DeleteStaff", args).URL
 }
 
-func (_ tApp) ListStaffs(
+func (_ tAdminDashboard) ListStaffs(
 		) string {
 	args := make(map[string]string)
 	
-	return revel.MainRouter.Reverse("App.ListStaffs", args).URL
+	return revel.MainRouter.Reverse("AdminDashboard.ListStaffs", args).URL
 }
 
-func (_ tApp) GetLoginStatus(
+func (_ tAdminDashboard) AddUnit(
 		) string {
 	args := make(map[string]string)
 	
-	return revel.MainRouter.Reverse("App.GetLoginStatus", args).URL
+	return revel.MainRouter.Reverse("AdminDashboard.AddUnit", args).URL
 }
 
-func (_ tApp) AssignUnitsToClient(
-		clientID int,
-		) string {
-	args := make(map[string]string)
-	
-	revel.Unbind(args, "clientID", clientID)
-	return revel.MainRouter.Reverse("App.AssignUnitsToClient", args).URL
-}
-
-func (_ tApp) AddUnit(
-		) string {
-	args := make(map[string]string)
-	
-	return revel.MainRouter.Reverse("App.AddUnit", args).URL
-}
-
-func (_ tApp) GetUnit(
+func (_ tAdminDashboard) GetUnit(
 		id int64,
 		) string {
 	args := make(map[string]string)
 	
 	revel.Unbind(args, "id", id)
-	return revel.MainRouter.Reverse("App.GetUnit", args).URL
+	return revel.MainRouter.Reverse("AdminDashboard.GetUnit", args).URL
 }
 
-func (_ tApp) UpdateUnit(
+func (_ tAdminDashboard) UpdateUnit(
 		id int64,
 		) string {
 	args := make(map[string]string)
 	
 	revel.Unbind(args, "id", id)
-	return revel.MainRouter.Reverse("App.UpdateUnit", args).URL
+	return revel.MainRouter.Reverse("AdminDashboard.UpdateUnit", args).URL
 }
 
-func (_ tApp) DeleteUnit(
+func (_ tAdminDashboard) DeleteUnit(
 		id int64,
 		) string {
 	args := make(map[string]string)
 	
 	revel.Unbind(args, "id", id)
-	return revel.MainRouter.Reverse("App.DeleteUnit", args).URL
+	return revel.MainRouter.Reverse("AdminDashboard.DeleteUnit", args).URL
 }
 
-func (_ tApp) ListUnits(
+func (_ tAdminDashboard) ListLatestOrdersByWarehouses(
 		) string {
 	args := make(map[string]string)
 	
-	return revel.MainRouter.Reverse("App.ListUnits", args).URL
+	return revel.MainRouter.Reverse("AdminDashboard.ListLatestOrdersByWarehouses", args).URL
 }
 
-func (_ tApp) GetTotalSales(
+func (_ tAdminDashboard) GetTotalSales(
 		) string {
 	args := make(map[string]string)
 	
-	return revel.MainRouter.Reverse("App.GetTotalSales", args).URL
+	return revel.MainRouter.Reverse("AdminDashboard.GetTotalSales", args).URL
 }
 
-func (_ tApp) GetOrderCompleted(
+func (_ tAdminDashboard) GetTotalSalesByWarehouse(
 		) string {
 	args := make(map[string]string)
 	
-	return revel.MainRouter.Reverse("App.GetOrderCompleted", args).URL
+	return revel.MainRouter.Reverse("AdminDashboard.GetTotalSalesByWarehouse", args).URL
 }
 
-func (_ tApp) GetOrderPending(
+func (_ tAdminDashboard) GetOrderCompleted(
 		) string {
 	args := make(map[string]string)
 	
-	return revel.MainRouter.Reverse("App.GetOrderPending", args).URL
+	return revel.MainRouter.Reverse("AdminDashboard.GetOrderCompleted", args).URL
 }
 
-func (_ tApp) GetLatestOrders(
+func (_ tAdminDashboard) GetOrderCompletedByWarehouse(
 		) string {
 	args := make(map[string]string)
 	
-	return revel.MainRouter.Reverse("App.GetLatestOrders", args).URL
+	return revel.MainRouter.Reverse("AdminDashboard.GetOrderCompletedByWarehouse", args).URL
 }
 
-func (_ tApp) UpdateOrderStatus(
+func (_ tAdminDashboard) GetOrderPending(
+		) string {
+	args := make(map[string]string)
+	
+	return revel.MainRouter.Reverse("AdminDashboard.GetOrderPending", args).URL
+}
+
+func (_ tAdminDashboard) GetOrderPendingByWarehouse(
+		) string {
+	args := make(map[string]string)
+	
+	return revel.MainRouter.Reverse("AdminDashboard.GetOrderPendingByWarehouse", args).URL
+}
+
+func (_ tAdminDashboard) GetLatestOrders(
+		) string {
+	args := make(map[string]string)
+	
+	return revel.MainRouter.Reverse("AdminDashboard.GetLatestOrders", args).URL
+}
+
+func (_ tAdminDashboard) UpdateOrderStatus(
 		id int64,
 		) string {
 	args := make(map[string]string)
 	
 	revel.Unbind(args, "id", id)
-	return revel.MainRouter.Reverse("App.UpdateOrderStatus", args).URL
+	return revel.MainRouter.Reverse("AdminDashboard.UpdateOrderStatus", args).URL
 }
 
-func (_ tApp) AddWarehouse(
+func (_ tAdminDashboard) AddWarehouse(
 		) string {
 	args := make(map[string]string)
 	
-	return revel.MainRouter.Reverse("App.AddWarehouse", args).URL
+	return revel.MainRouter.Reverse("AdminDashboard.AddWarehouse", args).URL
 }
 
-func (_ tApp) GetWarehouse(
+func (_ tAdminDashboard) GetWarehouse(
 		id int64,
 		) string {
 	args := make(map[string]string)
 	
 	revel.Unbind(args, "id", id)
-	return revel.MainRouter.Reverse("App.GetWarehouse", args).URL
+	return revel.MainRouter.Reverse("AdminDashboard.GetWarehouse", args).URL
 }
 
-func (_ tApp) UpdateWarehouse(
+func (_ tAdminDashboard) GetWarehouseByStaffID(
 		id int64,
 		) string {
 	args := make(map[string]string)
 	
 	revel.Unbind(args, "id", id)
-	return revel.MainRouter.Reverse("App.UpdateWarehouse", args).URL
+	return revel.MainRouter.Reverse("AdminDashboard.GetWarehouseByStaffID", args).URL
 }
 
-func (_ tApp) DeleteWarehouse(
+func (_ tAdminDashboard) UpdateWarehouse(
 		id int64,
 		) string {
 	args := make(map[string]string)
 	
 	revel.Unbind(args, "id", id)
-	return revel.MainRouter.Reverse("App.DeleteWarehouse", args).URL
+	return revel.MainRouter.Reverse("AdminDashboard.UpdateWarehouse", args).URL
 }
 
-func (_ tApp) ListWarehouses(
+func (_ tAdminDashboard) DeleteWarehouse(
+		id int64,
+		) string {
+	args := make(map[string]string)
+	
+	revel.Unbind(args, "id", id)
+	return revel.MainRouter.Reverse("AdminDashboard.DeleteWarehouse", args).URL
+}
+
+func (_ tAdminDashboard) ListWarehouses(
 		page int64,
 		perPage int64,
 		) string {
@@ -346,7 +355,26 @@ func (_ tApp) ListWarehouses(
 	
 	revel.Unbind(args, "page", page)
 	revel.Unbind(args, "perPage", perPage)
-	return revel.MainRouter.Reverse("App.ListWarehouses", args).URL
+	return revel.MainRouter.Reverse("AdminDashboard.ListWarehouses", args).URL
+}
+
+
+type tLoginPage struct {}
+var LoginPage tLoginPage
+
+
+func (_ tLoginPage) Index(
+		) string {
+	args := make(map[string]string)
+	
+	return revel.MainRouter.Reverse("LoginPage.Index", args).URL
+}
+
+func (_ tLoginPage) UserLogin(
+		) string {
+	args := make(map[string]string)
+	
+	return revel.MainRouter.Reverse("LoginPage.UserLogin", args).URL
 }
 
 
@@ -355,9 +383,11 @@ var OwnerDashboard tOwnerDashboard
 
 
 func (_ tOwnerDashboard) Index(
+		ownerID int64,
 		) string {
 	args := make(map[string]string)
 	
+	revel.Unbind(args, "ownerID", ownerID)
 	return revel.MainRouter.Reverse("OwnerDashboard.Index", args).URL
 }
 

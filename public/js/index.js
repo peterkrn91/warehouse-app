@@ -69,6 +69,11 @@ document.addEventListener("DOMContentLoaded", function () {
     button.addEventListener("click", function () {
       const modal = button.parentElement.parentElement;
       modal.style.display = "none";
+
+      // Reload the page after a short delay (e.g., 1 second)
+      setTimeout(function () {
+        location.reload();
+      }, 250); // Adjust the delay time as needed
     });
   });
 
@@ -78,4 +83,3 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 });
-
