@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 21, 2024 at 12:17 PM
+-- Generation Time: May 15, 2024 at 06:26 AM
 -- Server version: 10.4.27-MariaDB
 -- PHP Version: 8.1.12
 
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `warehouse_app`
+-- Database: `wherehouse_db`
 --
 
 -- --------------------------------------------------------
@@ -52,18 +52,19 @@ INSERT INTO `clients` (`id`, `name`) VALUES
 CREATE TABLE `staffs` (
   `id` int(11) NOT NULL,
   `name` varchar(255) NOT NULL,
-  `user_type` varchar(50) NOT NULL
+  `user_type` varchar(50) NOT NULL,
+  `password` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `staffs`
 --
 
-INSERT INTO `staffs` (`id`, `name`, `user_type`) VALUES
-(1, 'Joy', 'Staff'),
-(2, 'Peter', 'Staff'),
-(3, 'Matthew', 'Staff'),
-(4, 'Harry', 'Owner');
+INSERT INTO `staffs` (`id`, `name`, `user_type`, `password`) VALUES
+(1, 'Joy', 'Staff', 'joy123'),
+(2, 'Peter', 'Staff', 'peter123'),
+(3, 'Matthew', 'Staff', 'matt123'),
+(4, 'Harry', 'Owner', 'harry123');
 
 -- --------------------------------------------------------
 
@@ -89,7 +90,17 @@ CREATE TABLE `units` (
 INSERT INTO `units` (`id`, `name`, `description`, `kg`, `warehouse_id`, `client_id`, `order_date`, `status`) VALUES
 (10, 'Rubicon', 'JEEP', 900, 10003, 201, '2024-03-01', 'pending'),
 (11, 'GIGABYTE G24F', 'Monitor', 10, 10002, 202, '2024-02-17', 'completed'),
-(12, 'Secret-Lab', 'Kursi Gaming', 30, 10002, 203, '2024-02-29', 'completed');
+(12, 'Secret-Lab', 'Kursi Gaming', 30, 10002, 203, '2024-02-29', 'completed'),
+(13, 'Sedan X', 'Luxury sedan with advanced safety features', 1800, 10001, 201, '2024-05-01', 'pending'),
+(14, 'SUV Z', 'Off-road capable SUV with hybrid technology', 2200, 10002, 202, '2024-04-28', 'completed'),
+(15, 'Sports Car Y', 'High-performance sports car with turbocharged engine', 1600, 10003, 203, '2024-05-03', 'pending'),
+(16, 'Electric Car A', 'Compact electric car with autonomous driving features', 1500, 10004, 204, '2024-04-29', 'pending'),
+(17, 'Truck B', 'Heavy-duty truck with towing capacity of 10 tons', 3500, 10001, 205, '2024-05-02', 'completed'),
+(18, 'Hybrid Vehicle C', 'Mid-size hybrid vehicle with fuel-efficient engine', 1900, 10002, 201, '2024-04-30', 'pending'),
+(19, 'Luxury SUV D', 'Premium SUV with leather interiors and panoramic sunroof', 2400, 10003, 202, '2024-05-05', 'completed'),
+(20, 'Convertible E', 'Convertible sports car with retractable hardtop', 1700, 10004, 203, '2024-05-04', 'pending'),
+(21, 'Electric Scooter F', 'Urban electric scooter with removable battery', 100, 10001, 204, '2024-05-01', 'completed'),
+(22, 'Compact Car G', 'Affordable compact car with good fuel economy', 1200, 10002, 205, '2024-04-29', 'pending');
 
 -- --------------------------------------------------------
 
@@ -164,7 +175,7 @@ ALTER TABLE `staffs`
 -- AUTO_INCREMENT for table `units`
 --
 ALTER TABLE `units`
-  MODIFY `id` bigint(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` bigint(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT for table `warehouses`
