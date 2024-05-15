@@ -85,10 +85,10 @@ func (c AdminDashboard) Logout() revel.Result {
 func (c AdminDashboard) GetClient(id int64) revel.Result {
 	client, err := models.GetClient(id)
 	if err != nil {
-		c.Response.Status = 404 // or appropriate error status code
+		c.Response.Status = 404 // error status code
 		return nil
 	}
-	c.Response.Status = 200 // Success status code
+	c.Response.Status = 200 // success status code
 	return c.RenderJSON(client)
 }
 
@@ -165,13 +165,17 @@ func (c AdminDashboard) ListClientsByWarehouses() revel.Result {
 	unitModel := models.Unit{}
 
 	// Retrieve the warehouse ID from the session
-	warehouseIDInterface := c.Session["WarehouseID"]
-	warehouseIDStr, ok := warehouseIDInterface.(string)
-	fmt.Println("Session WarehouseID:", warehouseIDInterface)
+	warehouseIDInterface, err := c.Session.Get("WarehouseID")
 
+	if err != nil {
+		c.Response.Status = 400 // Bad request code
+		return c.RenderJSON(map[string]interface{}{"error": "WarehouseID not found in session"})
+	}
+
+	warehouseIDStr, ok := warehouseIDInterface.(string)
 	if !ok {
 		c.Response.Status = 400
-		return c.RenderJSON(map[string]interface{}{"error": "Invalid WarehouseID in session"})
+		return c.RenderJSON(map[string]interface{}{"error": "Invalid WarehouseID format in session"})
 	}
 
 	warehouseID, err := strconv.Atoi(warehouseIDStr)
@@ -180,14 +184,11 @@ func (c AdminDashboard) ListClientsByWarehouses() revel.Result {
 		return c.RenderJSON(map[string]interface{}{"error": "Invalid WarehouseID format in session"})
 	}
 
-	// Call the model method to retrieve clients by warehouse
 	data, err := unitModel.ListClientsByWarehouses(warehouseID)
 	if err != nil {
 		c.Response.Status = 500 // Internal Server Error
-		fmt.Println("Error fetching clients by warehouse:", err)
-		return c.RenderJSON(map[string]interface{}{"error": "Failed to fetch clients"})
+		return c.RenderJSON(map[string]interface{}{"error": "Failed to fetch latest orders"})
 	}
-
 	c.Response.Status = 200
 	return c.RenderJSON(data)
 }
@@ -294,7 +295,7 @@ func (c AdminDashboard) AddUnit() revel.Result {
 func (c AdminDashboard) GetUnit(id int64) revel.Result {
 	unit, err := models.GetUnit(id)
 	if err != nil {
-		c.Response.Status = 404 // or appropriate error status code
+		c.Response.Status = 404 // Error status code
 		return nil
 	}
 	c.Response.Status = 200 // Success status code
@@ -372,8 +373,12 @@ func (c AdminDashboard) GetTotalSalesByWarehouse() revel.Result {
 
 	// Retrieve the warehouse ID from the session
 	warehouseIDInterface, err := c.Session.Get("WarehouseID")
+	if err != nil {
+		c.Response.Status = 400
+		return c.RenderJSON(map[string]interface{}{"error": "WarehouseID not found in session"})
+	}
+
 	warehouseIDStr, ok := warehouseIDInterface.(string)
-	fmt.Println("Session WarehouseID:", warehouseIDInterface)
 
 	if !ok {
 		c.Response.Status = 400
@@ -390,10 +395,8 @@ func (c AdminDashboard) GetTotalSalesByWarehouse() revel.Result {
 	data, err := unitModel.GetTotalSalesByWarehouse(warehouseID)
 	if err != nil {
 		c.Response.Status = 500 // Internal Server Error
-		fmt.Println("Error fetching total sales by warehouse:", err)
-		return c.RenderJSON(map[string]interface{}{"error": "Failed to fetch total sales"})
+		return c.RenderJSON(map[string]interface{}{"error": "Failed to fetch latest orders"})
 	}
-
 	c.Response.Status = 200
 	return c.RenderJSON(data)
 }
@@ -414,8 +417,12 @@ func (c AdminDashboard) GetOrderCompletedByWarehouse() revel.Result {
 
 	// Retrieve the warehouse ID from the session
 	warehouseIDInterface, err := c.Session.Get("WarehouseID")
+	if err != nil {
+		// Handle the case where StaffID is not found in session
+		return c.RenderJSON(map[string]interface{}{"error": "WarehouseID not found in session"})
+	}
+
 	warehouseIDStr, ok := warehouseIDInterface.(string)
-	fmt.Println("Session WarehouseID:", warehouseIDInterface)
 
 	if !ok {
 		c.Response.Status = 400
@@ -456,6 +463,10 @@ func (c AdminDashboard) GetOrderPendingByWarehouse() revel.Result {
 
 	// Retrieve the warehouse ID from the session
 	warehouseIDInterface, err := c.Session.Get("WarehouseID")
+	if err != nil {
+		// Handle the case where StaffID is not found in session
+		return c.RenderJSON(map[string]interface{}{"error": "WarehouseID not found in session"})
+	}
 	warehouseIDStr, ok := warehouseIDInterface.(string)
 	fmt.Println("Session WarehouseID:", warehouseIDInterface)
 
